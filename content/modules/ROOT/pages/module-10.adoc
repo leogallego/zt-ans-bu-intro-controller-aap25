@@ -113,6 +113,95 @@ image:May-13-2025_at_21.04.19-image.png[Customized Apache welcome page, opts="bo
 
 ---
 
+== Controller as Code Alternative
+
+The survey you configured manually through the UI — including the question, variable name, type, and default value — is defined inline within the job template YAML.
+
+=== YAML Definition
+
+From `controller-as-code/configs/module-10/controller_objects.yml`:
+
+[source,yaml]
+----
+---
+controller_templates_module10:
+  - name: Install Apache with Survey
+    organization: Default
+    state: present
+    inventory: Lab-Inventory
+    become_enabled: true
+    playbook: apache_template.yml
+    project: Apache playbooks
+    credential: lab-credentials
+    survey_enabled: true
+    survey_spec:
+      name: Apache Survey
+      description: Survey for Apache template deployment
+      spec:
+        - question_name: "What is your name, fellow student?"
+          question_description: >-
+            Enter your name or nickname to see it work!
+          variable: student_name
+          type: text
+          required: false
+          default: Skippy
+----
+
+=== Apply the Full Workshop with CaC
+
+To apply **all** workshop objects at once (everything from modules 03 through 10):
+
+[source,bash]
+----
+# Apply all controller configuration
+ansible-playbook configure_controller_staged.yml -e module=all
+
+# Or use the full playbook with all objects defined inline
+ansible-playbook configure_controller.yml
+----
+
+=== Validate the Configuration
+
+To verify all objects exist and match the desired state without making changes:
+
+[source,bash]
+----
+ansible-playbook configure_controller.yml --check
+----
+
+=== Summary: UI vs. Controller as Code
+
+[cols="1,1,1"]
+|===
+| Aspect | UI (this workshop) | Controller as Code
+
+| **How objects are created**
+| Manually through web forms
+| Declarative YAML variable files
+
+| **Reproducibility**
+| Must repeat steps for each environment
+| Single playbook applies to any environment
+
+| **Version control**
+| Not possible
+| Full Git history of all changes
+
+| **Idempotency**
+| N/A
+| Built-in — safe to re-run anytime
+
+| **Dependency ordering**
+| Manual (you must create inventory before templates)
+| Automatic via the `dispatch` role
+
+| **Audit trail**
+| Controller activity stream
+| Git commits + Controller activity stream
+|===
+
+---
+
 == Congratulations!
 
 You have finished the lab successfully! 🎉

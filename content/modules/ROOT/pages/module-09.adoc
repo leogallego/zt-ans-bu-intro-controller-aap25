@@ -150,6 +150,55 @@ You can also launch the workflow by navigating back to the **Templates** page an
 
 ---
 
+== Controller as Code Alternative
+
+The workflow you built graphically in the Visualizer — including the node connections and parallel execution paths — is fully expressible as YAML using `simplified_workflow_nodes`.
+
+=== YAML Definition
+
+From `controller-as-code/configs/module-09/controller_objects.yml`:
+
+[source,yaml]
+----
+---
+controller_workflows_module09:
+  - name: Your first workflow
+    description: Create a Workflow from previous Job Templates
+    organization: Default
+    inventory: Lab-Inventory
+    simplified_workflow_nodes:
+      - identifier: apache101
+        unified_job_template: Install Apache
+        success_nodes:
+          - extended201
+          - motd201
+
+      - identifier: extended201
+        unified_job_template: Extended services
+
+      - identifier: motd201
+        unified_job_template: Set motd
+----
+
+Notice how the structure maps directly to what you built in the Visualizer:
+
+* `apache101` is the starting node (Install Apache)
+* `success_nodes` defines the conditional links — both `extended201` and `motd201` run in parallel on success
+* Each `identifier` corresponds to the *Node alias* you set in the UI
+
+=== Apply with CaC
+
+[source,bash]
+----
+# Create the workflow (and all prerequisite objects)
+ansible-playbook configure_controller_staged.yml -e module=module-09
+
+# Launch the workflow
+ansible-playbook configure_controller_launch.yml --tags launch-workflow
+----
+
+---
+
 == Next Steps
 
 Press the `Check` button below to proceed to the next challenge.

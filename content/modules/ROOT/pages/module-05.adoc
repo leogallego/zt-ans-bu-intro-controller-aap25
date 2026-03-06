@@ -87,6 +87,41 @@ Notice that the *SSH Private Key* field only allows you to **Reset** the value. 
 
 ---
 
+== Controller as Code Alternative
+
+The `lab-credentials` credential you explored was pre-loaded for this workshop. In a CaC approach, credentials are defined as variables and applied automatically. The SSH private key is read securely using an Ansible `lookup`.
+
+=== YAML Definition
+
+From `controller-as-code/configs/module-05/controller_objects.yml`:
+
+[source,yaml]
+----
+---
+controller_credentials_module05:
+  - name: lab-credentials
+    credential_type: Machine
+    organization: Default
+    inputs:
+      username: rhel
+      password: ansible123!
+      ssh_key_data: "{{ lookup('file', '/home/rhel/.ssh/id_rsa') }}"
+----
+
+[NOTE]
+====
+In production, sensitive values like passwords and SSH keys should be stored in *Ansible Vault* or an external secrets manager (e.g., HashiCorp Vault, CyberArk). The `infra.aap_configuration` collection supports credential input sources for external secret lookups.
+====
+
+=== Apply with CaC
+
+[source,bash]
+----
+ansible-playbook configure_controller_staged.yml -e module=module-05
+----
+
+---
+
 == Next Steps
 
 Press the `Check` button below to proceed to the next challenge.

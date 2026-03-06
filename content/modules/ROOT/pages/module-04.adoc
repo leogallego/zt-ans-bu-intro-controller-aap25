@@ -74,6 +74,39 @@ After saving, you will be taken to the *Details* tab for the new project. **Veri
 
 ---
 
+== Controller as Code Alternative
+
+The project you created through the UI can be defined in a single YAML entry.
+
+=== YAML Definition
+
+From `controller-as-code/configs/module-04/controller_objects.yml`:
+
+[source,yaml]
+----
+---
+controller_projects_module04:
+  - name: Apache playbooks
+    organization: Default
+    state: present
+    scm_type: git
+    scm_url: https://github.com/ansible-tmm/instruqt-wyfp.git
+    wait: true
+----
+
+The `wait: true` parameter ensures the project sync completes before moving on — equivalent to watching the status turn green in the UI.
+
+=== Apply with CaC
+
+To apply this module's configuration (cumulative — also creates the inventory from module 03):
+
+[source,bash]
+----
+ansible-playbook configure_controller_staged.yml -e module=module-04
+----
+
+---
+
 == Next Steps
 
 Press the `Check` button below to proceed to the next challenge.

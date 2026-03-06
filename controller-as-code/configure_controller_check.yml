@@ -1,0 +1,106 @@
+---
+# Check mode playbook - validates Controller state without making changes
+# Replaces the check-* tags from the original setup-control.sh
+#
+# Usage:
+#   # Check all objects exist and match desired state
+#   ansible-playbook configure_controller_check.yml --check
+#
+#   # Check a specific module's objects
+#   ansible-playbook configure_controller_check.yml --check -e module=module-06
+#
+#   # Check with execution verification (Apache service)
+#   ansible-playbook configure_controller_check.yml --tags check-execution
+#
+- name: Check Automation Controller Configuration
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+  vars:
+    module: all
+    __module_load_order:
+      - module-03
+      - module-04
+      - module-05
+      - module-06
+      - module-07
+      - module-08
+      - module-09
+      - module-10
+
+  tasks:
+    - name: Determine modules to check
+      ansible.builtin.set_fact:
+        __modules_to_check: >-
+          {{
+            __module_load_order
+            if module == 'all'
+            else __module_load_order[:(__module_load_order.index(module) + 1)]
+          }}
+      tags:
+        - always
+
+    - name: Load module configuration variables (cumulative)
+      ansible.builtin.include_vars:
+        file: "configs/{{ item }}/controller_objects.yml"
+      loop: "{{ __modules_to_check }}"
+      tags:
+        - always
+
+    - name: Validate Controller configuration via dispatch (check mode)
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      check_mode: true
+      tags:
+        - check-config
+
+    - name: Check Apache is serving on node1
+      ansible.builtin.uri:
+        url: http://node1
+        return_content: true
+      register: __apache_node1
+      until: __apache_node1.status == 200
+      retries: 60
+      delay: 5
+      failed_when: "'webserver' not in __apache_node1.content"
+      tags:
+        - check-execution
+        - never
+
+    - name: Check Apache is serving on node2
+      ansible.builtin.uri:
+        url: http://node2
+        return_content: true
+      register: __apache_node2
+      until: __apache_node2.status == 200
+      retries: 60
+      delay: 5
+      failed_when: "'webserver' not in __apache_node2.content"
+      tags:
+        - check-execution
+        - never
+
+    - name: Launch Install Apache and verify success
+      ansible.controller.job_launch:
+        job_template: Install Apache
+        wait: true
+        timeout: 120
+        controller_host: "{{ aap_hostname }}"
+        controller_username: "{{ aap_username }}"
+        controller_password: "{{ aap_password }}"
+        validate_certs: "{{ aap_validate_certs }}"
+      register: __job_apache_check
+      tags:
+        - check-execution
+        - never
+
+    - name: Assert Apache job was successful
+      ansible.builtin.assert:
+        that: __job_apache_check.status == 'successful'
+        success_msg: "The Install Apache job completed successfully."
+        fail_msg: "The Install Apache job failed."
+      tags:
+        - check-execution
+        - never

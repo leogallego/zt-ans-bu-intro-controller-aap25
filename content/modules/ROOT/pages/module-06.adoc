@@ -103,6 +103,48 @@ In the tab bar at the top of your lab screen, **click** the **Node1 Web** tab an
 
 ---
 
+== Controller as Code Alternative
+
+The job template you created by filling in a form in the UI is a single YAML entry in the CaC approach — linking inventory, project, playbook, and credentials by name.
+
+=== YAML Definition
+
+From `controller-as-code/configs/module-06/controller_objects.yml`:
+
+[source,yaml]
+----
+---
+controller_templates_module06:
+  - name: Install Apache
+    organization: Default
+    state: present
+    inventory: Lab-Inventory
+    become_enabled: true
+    playbook: apache.yml
+    project: Apache playbooks
+    credential: lab-credentials
+----
+
+Notice how each field maps directly to what you entered in the UI form. The CaC approach makes it easy to review, version-control, and reproduce this configuration.
+
+=== Apply with CaC
+
+[source,bash]
+----
+# Create all objects up to and including the job template
+ansible-playbook configure_controller_staged.yml -e module=module-06
+
+# Launch the job template separately (launches are not idempotent)
+ansible-playbook configure_controller_launch.yml --tags launch-apache
+----
+
+[TIP]
+====
+The CaC playbooks separate **configuration** (idempotent, safe to re-run) from **launching** (not idempotent). This is a best practice for production environments.
+====
+
+---
+
 == Next Steps
 
 Press the `Check` button below to proceed to the next challenge.

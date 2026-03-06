@@ -40,6 +40,21 @@ image:image.png[Collapsing and expanding the instructions sidebar, opts="border"
 
 ---
 
+== Controller as Code (CaC) Introduction
+
+Throughout this workshop, you will create automation controller objects (inventories, projects, credentials, job templates, and workflows) using the web UI. However, in production environments, these same objects can be managed **declaratively as code** using the link:https://github.com/redhat-cop/infra.aap_configuration[infra.aap_configuration] collection.
+
+This approach, known as **Controller as Code (CaC)**, allows you to:
+
+* Define all controller objects as YAML variables
+* Apply them idempotently with a single playbook
+* Version-control your entire controller configuration
+* Reproduce environments consistently across dev, staging, and production
+
+At the end of each challenge, you will find a *Controller as Code Alternative* section showing how the same objects you created in the UI can be expressed as declarative YAML. These sections reference the `controller-as-code/` directory in this repository.
+
+---
+
 == Troubleshooting
 
 If you encounter an issue, please notify the lab facilitator for assistance.
