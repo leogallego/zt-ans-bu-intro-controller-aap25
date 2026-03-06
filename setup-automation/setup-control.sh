@@ -148,6 +148,13 @@ ansible-galaxy collection install infra.aap_configuration
 CAC_DIR="/tmp/controller-as-code"
 mkdir -p "${CAC_DIR}/configs/module-"{03,04,05,06,07,08,09,10}
 
+# Ansible config for CaC directory (ensures collection is found regardless of user)
+cat > "${CAC_DIR}/ansible.cfg" << 'ENDOFFILE'
+[defaults]
+host_key_checking = false
+collections_paths = /tmp/ansible-automation-platform-containerized-setup-bundle-2.5-9-x86_64/collections:/root/.ansible/collections
+ENDOFFILE
+
 # Auth config
 cat > "${CAC_DIR}/configs/auth.yml" << 'ENDOFFILE'
 ---
@@ -316,7 +323,6 @@ cat > "${CAC_DIR}/configure_controller_staged.yml" << 'ENDOFFILE'
     - configs/auth.yml
   vars:
     module: ""
-    dispatch_include_wildcard_vars: true
     __module_load_order:
       - module-03
       - module-04
@@ -347,9 +353,54 @@ cat > "${CAC_DIR}/configure_controller_staged.yml" << 'ENDOFFILE'
       ansible.builtin.include_vars:
         file: "configs/{{ item }}/controller_objects.yml"
       loop: "{{ __modules_to_load }}"
-    - name: Apply Controller configuration via dispatch
+    - name: Merge wildcard-suffixed variables into base names
+      ansible.builtin.set_fact:
+        "{{ item }}": >-
+          {{ query('varnames', '^' ~ item ~ '_') | map('extract', vars) | flatten }}
+      loop:
+        - controller_inventories
+        - controller_hosts
+        - controller_groups
+        - controller_credentials
+        - controller_projects
+        - controller_templates
+        - controller_workflows
+      when: query('varnames', '^' ~ item ~ '_') | length > 0
+    - name: Apply credentials
       ansible.builtin.include_role:
-        name: infra.aap_configuration.dispatch
+        name: infra.aap_configuration.controller_credentials
+      when: controller_credentials is defined
+      tags: credentials
+    - name: Apply projects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_projects
+      when: controller_projects is defined
+      tags: projects
+    - name: Apply inventories
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_inventories
+      when: controller_inventories is defined
+      tags: inventories
+    - name: Apply hosts
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_hosts
+      when: controller_hosts is defined
+      tags: hosts
+    - name: Apply host groups
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_host_groups
+      when: controller_groups is defined
+      tags: host_groups
+    - name: Apply job templates
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_job_templates
+      when: controller_templates is defined
+      tags: job_templates
+    - name: Apply workflow job templates
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_workflow_job_templates
+      when: controller_workflows is defined
+      tags: workflow_job_templates
 ENDOFFILE
 
 # Credentials-only CaC playbook (for module setup prerequisites)
