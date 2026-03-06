@@ -341,6 +341,7 @@ cat > "${CAC_DIR}/configure_controller_staged.yml" << 'ENDOFFILE'
         fail_msg: >-
           Please specify a valid module with -e module=<module-name>.
           Valid values: {{ __module_load_order | join(', ') }}, all
+      tags: always
     - name: Determine modules to load
       ansible.builtin.set_fact:
         __modules_to_load: >-
@@ -349,10 +350,12 @@ cat > "${CAC_DIR}/configure_controller_staged.yml" << 'ENDOFFILE'
             if module == 'all'
             else __module_load_order[:(__module_load_order.index(module) + 1)]
           }}
+      tags: always
     - name: Load module configuration variables (cumulative)
       ansible.builtin.include_vars:
         file: "configs/{{ item }}/controller_objects.yml"
       loop: "{{ __modules_to_load }}"
+      tags: always
     - name: Merge wildcard-suffixed variables into base names
       ansible.builtin.set_fact:
         "{{ item }}": >-
@@ -366,6 +369,7 @@ cat > "${CAC_DIR}/configure_controller_staged.yml" << 'ENDOFFILE'
         - controller_templates
         - controller_workflows
       when: query('varnames', '^' ~ item ~ '_') | length > 0
+      tags: always
     - name: Apply credentials
       ansible.builtin.include_role:
         name: infra.aap_configuration.controller_credentials
