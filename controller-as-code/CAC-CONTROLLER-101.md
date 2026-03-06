@@ -2,14 +2,16 @@
 
 ## Overview
 
-This document captures the evaluation of the "Introduction to Ansible Automation Controller 2.5" hands-on workshop and the alternative implementation using the `infra.aap_configuration` collection (Controller as Code approach).
+This document captures the evaluation of the "Introduction to Ansible Automation Controller 2.5" hands-on workshop and the full migration to the `infra.aap_configuration` collection (Controller as Code approach).
 
 **Collection**: [infra.aap_configuration](https://github.com/redhat-cop/infra.aap_configuration)
 **Workshop**: zt-ans-bu-intro-controller-aap25
+**Branch**: `controller-tasks-to-casc`
+**Status**: Full migration complete — solve, validation, and setup scripts all use CaC
 
 ---
 
-## Workshop Structure (Original)
+## Workshop Structure
 
 The workshop consists of 10 modules that progressively teach AAP Controller concepts:
 
@@ -27,51 +29,66 @@ The workshop consists of 10 modules that progressively teach AAP Controller conc
 | 10 | Job Template with Survey | JT: Install Apache with Survey (student_name variable) |
 
 ### Pre-configured Objects (Not User-Created)
-- Credential: lab-credentials (Machine type with SSH key)
+- Credential: lab-credentials (Machine type with SSH key) — created by setup scripts via CaC
 - Demo Inventory (for reference)
 - Demo Project (for reference)
 
 ---
 
-## Problems with the Current Approach
+## Migration Summary
 
-### 1. Shell Script Anti-Pattern
-`setup-automation/setup-control.sh` (857 lines) embeds an entire Ansible playbook as a heredoc inside a bash script, mixing infrastructure setup (SSH keys, packages, network) with Controller configuration.
+### What Was Replaced
 
-### 2. Hardcoded Credentials (30+ repetitions)
-Every single task repeats all four connection parameters:
-```yaml
-controller_host: "https://localhost"
-controller_username: admin
-controller_password: ansible123!
-validate_certs: false
-```
+The original workshop used a monolithic approach:
+- `setup-automation/setup-control.sh` (857 lines) embedded an entire Ansible playbook (`/tmp/setup.yml`) as a heredoc, mixing infrastructure setup with Controller configuration
+- Credentials were hardcoded 30+ times across ~45 tasks
+- Every create task was duplicated as a check task (~400 lines of checks)
+- Complex tag combinations (`solve-inventory-all`, `solve-workflow`, `solve-all`, `check-all`) drove solve/validation scripts
+- No data/logic separation — Controller objects defined inline in tasks
 
-### 3. No Data/Logic Separation
-Controller objects (inventories, projects, templates) are defined inline in tasks rather than as declarative variables.
+### What Replaced It
 
-### 4. No Use of infra.aap_configuration
-Uses raw `ansible.controller` modules directly instead of the standardized CaC dispatch role.
+All Controller configuration now uses `infra.aap_configuration` with declarative YAML variables:
 
-### 5. Tag Explosion
-Complex tag combinations (`solve-inventory-all`, `solve-workflow`, `solve-all`, `check-all`, etc.) instead of clean module-based selection.
-
-### 6. Duplicated Check Tasks
-Every create task is duplicated as a check task (~400 lines of checks mirror ~400 lines of creates).
+| Component | Before | After |
+|-----------|--------|-------|
+| **setup-control.sh** | 857 lines (infra + 710-line heredoc) | ~340 lines (infra + CaC directory creation) |
+| **solve scripts** (8 files) | `ansible-playbook --tags solve-*` against monolith | `ansible-playbook configure_controller_staged.yml -e module=module-XX` |
+| **validation scripts** (6 files) | `ansible-playbook --tags check-*` against monolith | PLAY RECAP parsing with `--check` on CaC playbook |
+| **setup scripts** (modules 04, 05) | `ansible-playbook --tags solve-credentials` | `ansible-playbook configure_controller_credentials.yml` |
+| **Net line change** | — | **-555 lines** (356 added, 911 removed) |
 
 ---
 
-## CaC Alternative Implementation
+## Architecture After Migration
 
-### Directory Structure
+### Runtime Flow
 
 ```
-controller-as-code/
-├── ansible.cfg
-├── collections/
-│   └── requirements.yml              # Collection dependencies
+Workshop Platform (Instruqt)
+  │
+  ├── setup-automation/main.yml
+  │     └── setup-control.sh
+  │           ├── Infrastructure setup (SSH, packages, ansible-navigator)
+  │           ├── ansible-galaxy collection install infra.aap_configuration
+  │           └── Creates /tmp/controller-as-code/ directory with:
+  │                 ├── configs/auth.yml
+  │                 ├── configs/module-{03..10}/controller_objects.yml
+  │                 ├── configure_controller_staged.yml
+  │                 └── configure_controller_credentials.yml
+  │
+  └── runtime-automation/main.yml (dispatches per-module scripts)
+        ├── setup-control.sh    → Runs ansible-navigator images (or credentials for mod 04/05)
+        ├── solve-control.sh    → ansible-playbook configure_controller_staged.yml -e module=module-XX
+        └── validation-control.sh → Same playbook with --check, parse PLAY RECAP
+```
+
+### CaC Directory on Control Node (`/tmp/controller-as-code/`)
+
+```
+/tmp/controller-as-code/
 ├── configs/
-│   ├── auth.yml                       # AAP connection (vault-encrypt in prod)
+│   ├── auth.yml                          # AAP connection (aap_hostname, aap_username, etc.)
 │   ├── module-03/controller_objects.yml  # Inventory, hosts, groups
 │   ├── module-04/controller_objects.yml  # Apache playbooks project
 │   ├── module-05/controller_objects.yml  # lab-credentials
@@ -80,29 +97,124 @@ controller-as-code/
 │   ├── module-08/controller_objects.yml  # node3, database group, 2 more JTs
 │   ├── module-09/controller_objects.yml  # Workflow template
 │   └── module-10/controller_objects.yml  # Survey JT
-├── configure_controller.yml           # Full apply (replaces solve-all)
-├── configure_controller_staged.yml    # Per-module apply (replaces solve-* tags)
-├── configure_controller_check.yml     # Validation (replaces check-* tags)
-└── configure_controller_launch.yml    # Job launches (separated from config)
+├── configure_controller_staged.yml       # Main CaC playbook (cumulative module loading)
+└── configure_controller_credentials.yml  # Credentials-only playbook (for module setup)
 ```
 
-### Key Design Decisions
+### Standalone CaC Reference (`controller-as-code/` in repo root)
 
-1. **Wildcard variable merging** (`dispatch_include_wildcard_vars: true`): Variables like `controller_hosts_module03` and `controller_hosts_module08` are automatically merged into `controller_hosts` by the dispatch role. This allows per-module files without overwrite conflicts.
+```
+controller-as-code/
+├── ansible.cfg
+├── collections/
+│   └── requirements.yml
+├── configs/
+│   ├── auth.yml
+│   └── module-{03..10}/controller_objects.yml
+├── configure_controller.yml              # Full apply (all objects inline)
+├── configure_controller_staged.yml       # Per-module apply (cumulative)
+├── configure_controller_check.yml        # Validation with execution checks
+├── configure_controller_launch.yml       # Job/workflow launches
+└── CAC-CONTROLLER-101.md                 # This file
+```
 
-2. **Cumulative module loading**: Running `-e module=module-09` loads modules 03 through 09, because the workflow depends on all prior objects existing.
+---
 
-3. **Separated launch playbook**: Job launches (`job_launch`, `workflow_launch`) are in a separate playbook because they are not idempotent. The CaC config playbooks are fully idempotent.
+## Key Design Decisions
 
-4. **Dependency ordering handled by dispatch**: The `dispatch` role automatically applies objects in the correct order (credentials -> projects -> templates -> workflows) regardless of the order in variable files.
+### 1. Wildcard Variable Merging
 
-### Usage
+Variables use suffixed names (`controller_hosts_module03`, `controller_hosts_module08`) so the dispatch role's `dispatch_include_wildcard_vars: true` automatically merges them into `controller_hosts`. This allows per-module config files to be loaded cumulatively without overwriting each other.
+
+### 2. Cumulative Module Loading
+
+Running `-e module=module-09` loads modules 03 through 09, because the workflow depends on all prior objects existing. The `__module_load_order` list defines the sequence.
+
+### 3. Separated Concerns
+
+- **Configuration** (idempotent, safe to re-run): `configure_controller_staged.yml`
+- **Credential pre-creation** (for setup scripts): `configure_controller_credentials.yml`
+- **Job launches** (not idempotent): `configure_controller_launch.yml`
+- **Validation** (check mode): Same staged playbook with `--check` flag
+
+### 4. Dependency Ordering via Dispatch
+
+The `infra.aap_configuration.dispatch` role automatically applies objects in the correct order (credentials -> projects -> inventories -> hosts -> groups -> templates -> workflows) regardless of the order in variable files.
+
+### 5. Validation Strategy
+
+Validation scripts run the CaC staged playbook with `--check` and parse the PLAY RECAP output:
+- `changed=0` → all objects exist and match desired state (PASS)
+- `changed=[1-9]` or `failed=[1-9]` → objects missing or misconfigured (FAIL)
+
+Each validation script preserves user-friendly error messages explaining what the student should have created.
+
+---
+
+## Script Reference
+
+### Solve Scripts (all follow same pattern)
+
+```bash
+#!/bin/sh
+CAC_DIR="/tmp/controller-as-code"
+export ANSIBLE_COLLECTIONS_PATH="/tmp/ansible-automation-platform-containerized-setup-bundle-2.5-9-x86_64/collections/:/root/.ansible/collections/ansible_collections/"
+
+ansible-playbook "${CAC_DIR}/configure_controller_staged.yml" -e module=module-XX
+```
+
+### Validation Scripts (all follow same pattern)
+
+```bash
+#!/bin/sh
+CAC_DIR="/tmp/controller-as-code"
+export ANSIBLE_COLLECTIONS_PATH="..."
+
+OUTPUT=$(ansible-playbook "${CAC_DIR}/configure_controller_staged.yml" \
+  -e module=module-XX --check [--tags <object_type>] 2>&1)
+RC=$?
+
+if [ $RC -ne 0 ] || echo "$OUTPUT" | grep -qE "changed=[1-9]|failed=[1-9]|unreachable=[1-9]"; then
+  echo "FAIL: <specific error message for the module>"
+  exit 1
+fi
+```
+
+### Validation Tags Per Module
+
+| Module | `--tags` Used | What Is Checked |
+|--------|---------------|-----------------|
+| 03 | (none — checks all) | Lab-Inventory, node1, node2, web group |
+| 04 | `projects` | Apache playbooks project |
+| 06 | `job_templates` | Install Apache JT |
+| 07 | `projects` | Additional playbooks project |
+| 08 | `job_templates` then `hosts,host_groups` | Extended services, Set motd, node3, database group |
+| 09 | `workflow_job_templates` | Your first workflow |
+| 05, 10 | (no validation) | Stubs — credentials are pre-loaded, survey has no check |
+
+### Setup Scripts (modules 04, 05)
+
+Pre-create credentials before the student reaches the module:
+
+```bash
+#!/bin/sh
+CAC_DIR="/tmp/controller-as-code"
+export ANSIBLE_COLLECTIONS_PATH="..."
+
+ansible-playbook "${CAC_DIR}/configure_controller_credentials.yml"
+```
+
+---
+
+## Standalone CaC Usage
+
+The `controller-as-code/` directory in the repo root provides standalone playbooks for use outside the Instruqt workshop platform:
 
 ```bash
 # Install the collection
 ansible-galaxy collection install -r collections/requirements.yml
 
-# Apply ALL workshop objects at once (replaces solve-all)
+# Apply ALL workshop objects at once
 ansible-playbook configure_controller.yml
 
 # Apply up to module 06 only (cumulative: includes 03, 04, 05, 06)
@@ -111,7 +223,7 @@ ansible-playbook configure_controller_staged.yml -e module=module-06
 # Apply all modules
 ansible-playbook configure_controller_staged.yml -e module=all
 
-# Validate everything matches desired state (replaces check-all)
+# Validate everything matches desired state
 ansible-playbook configure_controller.yml --check
 
 # Apply only specific object types with tags
@@ -179,14 +291,15 @@ Each role is **skipped** if its corresponding variable is not defined.
 
 ## Complexity Reduction Summary
 
-| Metric | Original setup-control.sh | CaC Alternative |
-|--------|---------------------------|-----------------|
-| Total lines of AAP config | ~857 (shell + embedded playbook) | ~150 (across all YAML files) |
-| Times credentials appear | 30+ | 1 |
+| Metric | Original (pre-migration) | CaC (post-migration) |
+|--------|--------------------------|----------------------|
+| Total lines of AAP config | ~857 (shell + embedded playbook) | ~200 (CaC heredocs in setup script) |
+| Times credentials appear | 30+ | 1 (in configs/auth.yml) |
 | Number of explicit tasks | ~45 (create + check duplicated) | 0 (dispatch handles it) |
-| Playbooks | 1 monolithic heredoc in shell | 4 focused playbooks |
-| Check mode support | Manual duplication of every task | Built-in via --check flag |
-| Dependency ordering | Manual task ordering | Automatic via dispatch |
+| Solve script complexity | Tag-based, 3+ ansible-playbook calls per module | 1 command per module |
+| Validation script complexity | 4 separate check commands (module 03) | 1 command with PLAY RECAP parsing |
+| /tmp/setup.yml references | 16 across all scripts | 0 |
+| Net line change | — | **-555 lines** |
 
 ---
 
@@ -194,28 +307,32 @@ Each role is **skipped** if its corresponding variable is not defined.
 
 ### Inventory (Module 03)
 ```yaml
-controller_inventories:
+controller_inventories_module03:
   - name: Lab-Inventory
     organization: Default
 ```
 
 ### Hosts (Modules 03, 08)
 ```yaml
-controller_hosts:
+controller_hosts_module03:
   - name: node1
     inventory: Lab-Inventory
   - name: node2
     inventory: Lab-Inventory
+
+controller_hosts_module08:
   - name: node3
     inventory: Lab-Inventory
 ```
 
 ### Groups (Modules 03, 08)
 ```yaml
-controller_groups:
+controller_groups_module03:
   - name: web
     inventory: Lab-Inventory
     hosts: [node1, node2]
+
+controller_groups_module08:
   - name: database
     inventory: Lab-Inventory
     hosts: [node3]
@@ -223,7 +340,7 @@ controller_groups:
 
 ### Credentials (Module 05)
 ```yaml
-controller_credentials:
+controller_credentials_module05:
   - name: lab-credentials
     credential_type: Machine
     organization: Default
@@ -235,12 +352,14 @@ controller_credentials:
 
 ### Projects (Modules 04, 07)
 ```yaml
-controller_projects:
+controller_projects_module04:
   - name: Apache playbooks
     organization: Default
     scm_type: git
     scm_url: https://github.com/ansible-tmm/instruqt-wyfp.git
     wait: true
+
+controller_projects_module07:
   - name: Additional playbooks
     organization: Default
     scm_type: git
@@ -250,7 +369,7 @@ controller_projects:
 
 ### Job Templates (Modules 06, 08, 10)
 ```yaml
-controller_templates:
+controller_templates_module06:
   - name: Install Apache
     organization: Default
     inventory: Lab-Inventory
@@ -258,6 +377,8 @@ controller_templates:
     playbook: apache.yml
     project: Apache playbooks
     credential: lab-credentials
+
+controller_templates_module08:
   - name: Extended services
     organization: Default
     inventory: Lab-Inventory
@@ -272,6 +393,8 @@ controller_templates:
     playbook: motd_facts.yml
     project: Additional playbooks
     credential: lab-credentials
+
+controller_templates_module10:
   - name: Install Apache with Survey
     organization: Default
     inventory: Lab-Inventory
@@ -292,7 +415,7 @@ controller_templates:
 
 ### Workflow (Module 09)
 ```yaml
-controller_workflows:
+controller_workflows_module09:
   - name: Your first workflow
     description: Create a Workflow from previous Job Templates
     organization: Default
