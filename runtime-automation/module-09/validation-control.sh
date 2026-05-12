@@ -1,20 +1,20 @@
 #!/bin/sh
 echo "Validated module called module-02" >> /tmp/progress.log
 
-set -e
+# set -e
 
-INVENTORY="Lab-Inventory"
-PROJECT="Apache playbooks"
-PROJECT2="Additional playbooks"
-TEMPLATE="Install Apache"
-TEMPLATE2="Set motd"
-TEMPLATE3="Extended services"
-WORKFLOW="Your first workflow"
-HOSTS=(node1 node2)
-GROUP="web"
+# INVENTORY="Lab-Inventory"
+# PROJECT="Apache playbooks"
+# PROJECT2="Additional playbooks"
+# TEMPLATE="Install Apache"
+# TEMPLATE2="Set motd"
+# TEMPLATE3="Extended services"
+# WORKFLOW="Your first workflow"
+# HOSTS=(node1 node2)
+# GROUP="web"
 
-#Ansible settings
-export ANSIBLE_STDOUT_CALLBACK="community.general.yaml"
+# #Ansible settings
+# export ANSIBLE_STDOUT_CALLBACK="community.general.yaml"
 
 ## solve credentials and job templates
 #su --login rhel -c '/home/rhel/.local/bin/ansible-navigator run /tmp/controller-101-setup.yml --tags "solve-credentials,solve-job_template"'
