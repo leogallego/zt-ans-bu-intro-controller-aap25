@@ -47,7 +47,7 @@ Fill out the form with the following information:
 * **Name:** `Additional playbooks`
 * **Organization:** `Default`
 * **Source Control Type:** `Git`
-* **Source Control URL:**martins0611
+* **Source Control URL:**
 +
 [source,text]
 ----
