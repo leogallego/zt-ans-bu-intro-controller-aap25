@@ -5,7 +5,7 @@ systemctl disable systemd-tmpfiles-setup.service
 
 
 # Install collection(s)
-ansible-galaxy collection install community.general
+
 
 nmcli connection add type ethernet con-name enp2s0 ifname enp2s0 ipv4.addresses 192.168.1.10/24 ipv4.method manual connection.autoconnect yes
 nmcli connection up enp2s0
