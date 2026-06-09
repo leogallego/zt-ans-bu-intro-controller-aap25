@@ -49,10 +49,9 @@
       tags:
         - always
 
-    - name: Validate Controller configuration via dispatch (check mode)
+    - name: Validate Controller configuration via dispatch
       ansible.builtin.include_role:
         name: infra.aap_configuration.dispatch
-      check_mode: true
       tags:
         - check-config
 

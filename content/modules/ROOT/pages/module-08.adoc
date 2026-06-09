@@ -52,9 +52,7 @@ Fill out the form with the following information:
 * **Name:** `Extended services`
 * **Job Type:** `Run`
 * **Inventory:** `Lab-Inventory`
-* **Project:** `Additional playbooks`martins0611== Troubleshooting
-
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Intro+to+Controller+slug+ID:+controller-101-inventory+AAP25&assignees=leogallego[open an issue on GitHub].
+* **Project:** `Additional playbooks`
 * **Playbook:** `extended_services.yml`
 * **Credentials:** Select `lab-credentials`.
 * **Privilege Escalation:** **Check** this box to enable `become`.
