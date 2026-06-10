@@ -1,0 +1,69 @@
+---
+# Launch playbook - runs job templates after configuration
+# Separated from configuration to keep CaC idempotent
+#
+# Usage:
+#   # Launch Install Apache
+#   ansible-playbook configure_controller_launch.yml --tags launch-apache
+#
+#   # Launch all job templates
+#   ansible-playbook configure_controller_launch.yml --tags launch-all
+#
+#   # Launch workflow
+#   ansible-playbook configure_controller_launch.yml --tags launch-workflow
+#
+- name: Launch Controller Job Templates
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+
+  tasks:
+    - name: Launch Install Apache
+      ansible.controller.job_launch:
+        job_template: Install Apache
+        controller_host: "{{ aap_hostname }}"
+        controller_username: "{{ aap_username }}"
+        controller_password: "{{ aap_password }}"
+        validate_certs: "{{ aap_validate_certs }}"
+      register: __job_apache
+      tags:
+        - launch-apache
+        - launch-all
+
+    - name: Launch Set motd
+      ansible.controller.job_launch:
+        job_template: Set motd
+        controller_host: "{{ aap_hostname }}"
+        controller_username: "{{ aap_username }}"
+        controller_password: "{{ aap_password }}"
+        validate_certs: "{{ aap_validate_certs }}"
+      register: __job_motd
+      tags:
+        - launch-motd
+        - launch-all
+
+    - name: Launch Extended services
+      ansible.controller.job_launch:
+        job_template: Extended services
+        controller_host: "{{ aap_hostname }}"
+        controller_username: "{{ aap_username }}"
+        controller_password: "{{ aap_password }}"
+        validate_certs: "{{ aap_validate_certs }}"
+      register: __job_extended
+      tags:
+        - launch-extended
+        - launch-all
+
+    - name: Launch Your first workflow
+      ansible.controller.workflow_launch:
+        workflow_template: Your first workflow
+        controller_host: "{{ aap_hostname }}"
+        controller_username: "{{ aap_username }}"
+        controller_password: "{{ aap_password }}"
+        validate_certs: "{{ aap_validate_certs }}"
+      register: __job_workflow
+      tags:
+        - launch-workflow
+        - launch-all
