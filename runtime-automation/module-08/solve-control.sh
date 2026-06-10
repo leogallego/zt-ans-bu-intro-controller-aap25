@@ -2,6 +2,6 @@
 echo "Solving module-08 via Controller as Code" >> /tmp/progress.log
 
 CAC_DIR="/tmp/controller-as-code"
-export ANSIBLE_COLLECTIONS_PATH="/tmp/ansible-automation-platform-containerized-setup-bundle-2.5-9-x86_64/collections/:/root/.ansible/collections/ansible_collections/"
+CAC_VENV="/tmp/cac-venv/bin"
 
-ansible-playbook "${CAC_DIR}/configure_controller_staged.yml" -e module=module-08
+"${CAC_VENV}/ansible-playbook" "${CAC_DIR}/configure_controller_staged.yml" -e module=module-08

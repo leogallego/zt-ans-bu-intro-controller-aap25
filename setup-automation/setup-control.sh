@@ -109,9 +109,6 @@ su - $USER -c 'cp /home/$USER/ansible-navigator.yml /home/$USER/.ansible-navigat
 su - $USER -c 'cp /home/$USER/ansible-navigator.yml /home/$USER/ansible-files/ansible-navigator.yml'
 
 
-git clone https://github.com/ansible-tmm/controller-101.git /tmp/controller-101-2024
-
-
 # ## set inventory hosts for commandline ansible
 su - $USER -c 'cat >/home/$USER/ansible-files/hosts <<EOL
 [web]
@@ -141,6 +138,10 @@ echo 'export PATH=$HOME/.local/bin:$PATH' >> /home/$USER/.profile
 echo 'export PATH=$HOME/.local/bin:$PATH' >> /etc/profile
 
 # ## Controller as Code (CaC) setup
-# Install the infra.aap_configuration collection for CaC playbooks
+# Create venv with ansible-core 2.16.z (matches ee-supported-rhel9)
 # CaC files are copied to /tmp/controller-as-code/ by setup-automation/main.yml
-ansible-galaxy collection install infra.aap_configuration
+dnf install -y python3.11 python3.11-pip
+python3.11 -m venv /tmp/cac-venv
+/tmp/cac-venv/bin/pip install --quiet --upgrade pip
+/tmp/cac-venv/bin/pip install --quiet "ansible-core~=2.16.0"
+/tmp/cac-venv/bin/ansible-galaxy collection install infra.aap_configuration:==4.6.0
