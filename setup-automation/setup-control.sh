@@ -140,6 +140,8 @@ echo 'export PATH=$HOME/.local/bin:$PATH' >> /etc/profile
 # ## Controller as Code (CaC) setup
 # Create venv with ansible-core 2.16.z (matches ee-supported-rhel9)
 # CaC files are copied to /tmp/controller-as-code/ by setup-automation/main.yml
-python3 -m venv /tmp/cac-venv
+dnf install -y python3.11 python3.11-pip
+python3.11 -m venv /tmp/cac-venv
+/tmp/cac-venv/bin/pip install --quiet --upgrade pip
 /tmp/cac-venv/bin/pip install --quiet "ansible-core~=2.16.0"
 /tmp/cac-venv/bin/ansible-galaxy collection install infra.aap_configuration:==4.6.0
