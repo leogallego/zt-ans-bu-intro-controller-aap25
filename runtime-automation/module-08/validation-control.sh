@@ -2,10 +2,10 @@
 echo "Validating module-08 via Controller as Code" >> /tmp/progress.log
 
 CAC_DIR="/tmp/controller-as-code"
-export ANSIBLE_COLLECTIONS_PATH="/tmp/ansible-automation-platform-containerized-setup-bundle-2.5-9-x86_64/collections/:/root/.ansible/collections/ansible_collections/"
+CAC_VENV="/tmp/cac-venv/bin"
 
 
-BASE_CMD="ansible-playbook ${CAC_DIR}/configure_controller_staged.yml -e module=module-08 --check"
+BASE_CMD="${CAC_VENV}/ansible-playbook ${CAC_DIR}/configure_controller_staged.yml -e module=module-08 --check"
 
 # Check Extended services and Set motd templates exist
 OUTPUT=$(eval "${BASE_CMD} --tags job_templates" 2>&1)
