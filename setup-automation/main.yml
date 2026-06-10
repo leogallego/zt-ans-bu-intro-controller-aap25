@@ -46,6 +46,15 @@
         state: directory
         mode: "0755"
 
+    - name: Copy Controller as Code directory to control node
+      when: config_host == 'control'
+      ansible.builtin.copy:
+        src: "../controller-as-code/"
+        dest: "/tmp/controller-as-code/"
+        mode: "0644"
+        directory_mode: "0755"
+      become: true
+
     - name: Check if setup-server.sh exists
       ansible.builtin.stat:
         path: "./setup-{{ config_host }}.sh"

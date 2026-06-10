@@ -59,15 +59,13 @@ ansible-playbook configure_controller_check.yml --tags check-execution
 
 ### Three Automation Layers
 
-1. **`setup-automation/`** -- One-time lab provisioning. `main.yml` connects to bastion and dispatches `setup-{host}.sh` scripts. The `setup-control.sh` does infrastructure setup (SSH, ansible-navigator, git) AND writes the entire CaC directory structure to `/tmp/controller-as-code/` on the control node via heredocs.
+1. **`setup-automation/`** -- One-time lab provisioning. `main.yml` connects to bastion, copies `controller-as-code/` to `/tmp/controller-as-code/` on the control node, and dispatches `setup-{host}.sh` scripts. The `setup-control.sh` handles infrastructure setup (SSH, ansible-navigator, git) and installs the `infra.aap_configuration` collection.
 
 2. **`runtime-automation/`** -- Per-module lifecycle. `main.yml` dispatches `{setup,solve,validation}-{host}.sh` scripts per module. Only `*-control.sh` scripts interact with Controller; node scripts handle host-level setup.
 
-3. **`controller-as-code/`** -- Standalone CaC reference (same content as what `setup-control.sh` writes to `/tmp/`). Four playbooks with distinct responsibilities:
-   - `configure_controller.yml` -- full apply via `dispatch` role (all objects inline)
-   - `configure_controller_staged.yml` -- per-module apply (cumulative loading)
-   - `configure_controller_check.yml` -- validation with execution checks
-   - `configure_controller_launch.yml` -- job/workflow launches (non-idempotent, separated intentionally)
+3. **`controller-as-code/`** -- Single source of truth for all CaC playbooks and configs. Copied to `/tmp/controller-as-code/` on the control node during setup. Two playbooks:
+   - `configure_controller_staged.yml` -- per-module apply (cumulative loading, used by solve and validation scripts)
+   - `configure_controller_credentials.yml` -- credentials-only apply (used by module-04/05 setup scripts)
 
 ### CaC Variable Pattern
 
@@ -82,14 +80,6 @@ Each module's objects live in `configs/module-XX/controller_objects.yml`. The st
 **Validation scripts**: Run the same staged playbook with `--check` and optional `--tags`, then parse PLAY RECAP for `changed=[1-9]|failed=[1-9]|unreachable=[1-9]`. Each module has specific user-facing error messages.
 
 **Setup scripts** (modules 04, 05): Pre-create credentials via `configure_controller_credentials.yml` so they exist before the student reaches the module.
-
-### Dual Maintenance Requirement
-
-The CaC content exists in **two places that must stay in sync**:
-- `controller-as-code/configs/` -- standalone reference files (source of truth)
-- `setup-automation/setup-control.sh` -- heredoc copies deployed to `/tmp/controller-as-code/` at runtime
-
-When modifying Controller objects, update both locations.
 
 ## Workshop Module Progression
 
