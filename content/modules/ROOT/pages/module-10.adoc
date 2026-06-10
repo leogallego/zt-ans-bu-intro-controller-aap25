@@ -215,7 +215,7 @@ Remember to press the green **Check**, **Next**, or **Skip** button below to com
 
 Scan the following QR code to claim your Ansible Forum badge for completing the lab:
 
-image::../assets/May-13-2025_at_21.28.27-image.png[QR code for Ansible Forum badge, opts="border"]
+image::May-13-2025_at_21.28.27-image.png[QR code for Ansible Forum badge, opts="border"]
 
 If you don't have an Ansible Forum account yet, no worries! You can sign up using the same link. To keep it simple, you can register or log in with your Google or GitHub account, and an account will be created for you automatically.
 
