@@ -96,6 +96,12 @@ Click on the **Demo Project** that comes pre-loaded. Examine the different field
 
 ---
 
+== Controller as Code Alternative
+
+The Demo Inventory and Demo Project you explored in this challenge come pre-loaded with the automation controller. In a CaC approach, even these default objects can be managed declaratively. Starting from the next challenge, you will see how every object you create through the UI has an equivalent YAML representation using the `infra.aap_configuration` collection.
+
+---
+
 == Next Steps
 
 Press the `Next` button below to proceed to the next challenge.

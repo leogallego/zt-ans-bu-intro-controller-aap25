@@ -1,0 +1,7 @@
+---
+# AAP Controller connection settings
+# In production, encrypt this file with ansible-vault
+aap_hostname: "https://localhost"
+aap_username: admin
+aap_password: ansible123!
+aap_validate_certs: false

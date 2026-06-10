@@ -81,6 +81,37 @@ b. **Click** on the **Successful** status text to review the output of the sync 
 
 ---
 
+== Controller as Code Alternative
+
+Adding a second project is simply another entry in a variable file. The `dispatch` role handles syncing automatically.
+
+=== YAML Definition
+
+From `controller-as-code/configs/module-07/controller_objects.yml`:
+
+[source,yaml]
+----
+---
+controller_projects_module07:
+  - name: Additional playbooks
+    organization: Default
+    state: present
+    scm_type: git
+    scm_url: https://github.com/ansible-tmm/instruqt-wyfp-additional.git
+    wait: true
+----
+
+Because the variable uses a wildcard suffix (`_module07`), the `dispatch` role automatically merges it with `controller_projects_module04` from the earlier module, so both projects are applied together.
+
+=== Apply with CaC
+
+[source,bash]
+----
+ansible-playbook configure_controller_staged.yml -e module=module-07
+----
+
+---
+
 == Next Steps
 
 Press the `Check` button below to proceed to the next challenge.

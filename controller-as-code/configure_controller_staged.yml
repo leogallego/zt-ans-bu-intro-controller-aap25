@@ -1,0 +1,129 @@
+---
+# Staged Controller as Code playbook
+# Applies workshop objects progressively, one module at a time
+# Uses wildcard variable merging so module configs don't overwrite each other
+#
+# Usage:
+#   # Apply up to a specific module (cumulative, includes all prior modules)
+#   ansible-playbook configure_controller_staged.yml -e module=module-06
+#
+#   # Apply all modules
+#   ansible-playbook configure_controller_staged.yml -e module=all
+#
+# Module progression:
+#   module-03: Inventory, hosts (node1, node2), group (web)
+#   module-04: Project (Apache playbooks)
+#   module-05: Credential (lab-credentials)
+#   module-06: Job Template (Install Apache)
+#   module-07: Project (Additional playbooks)
+#   module-08: Host (node3), group (database), Job Templates (Extended services, Set motd)
+#   module-09: Workflow (Your first workflow)
+#   module-10: Job Template with Survey (Install Apache with Survey)
+#
+- name: Configure Automation Controller - Staged Workshop Setup
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+  vars:
+    module: ""
+    __module_load_order:
+      - module-03
+      - module-04
+      - module-05
+      - module-06
+      - module-07
+      - module-08
+      - module-09
+      - module-10
+
+  tasks:
+    - name: Validate module parameter
+      ansible.builtin.assert:
+        that:
+          - module | length > 0
+          - module == 'all' or module in __module_load_order
+        fail_msg: >-
+          Please specify a valid module with -e module=<module-name>.
+          Valid values: {{ __module_load_order | join(', ') }}, all
+      tags: always
+
+    - name: Determine modules to load
+      ansible.builtin.set_fact:
+        __modules_to_load: >-
+          {{
+            __module_load_order
+            if module == 'all'
+            else __module_load_order[:(__module_load_order.index(module) + 1)]
+          }}
+      tags: always
+
+    - name: Display modules being applied
+      ansible.builtin.debug:
+        msg: "Applying modules: {{ __modules_to_load | join(', ') }}"
+        verbosity: 1
+      tags: always
+
+    - name: Load module configuration variables (cumulative)
+      ansible.builtin.include_vars:
+        file: "configs/{{ item }}/controller_objects.yml"
+      loop: "{{ __modules_to_load }}"
+      tags: always
+
+    - name: Merge wildcard-suffixed variables into base names
+      ansible.builtin.set_fact:
+        "{{ item }}": >-
+          {{ query('varnames', '^' ~ item ~ '_') | map('extract', vars) | flatten }}
+      loop:
+        - controller_inventories
+        - controller_hosts
+        - controller_groups
+        - controller_credentials
+        - controller_projects
+        - controller_templates
+        - controller_workflows
+      when: query('varnames', '^' ~ item ~ '_') | length > 0
+      tags: always
+
+    - name: Apply credentials
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_credentials
+      when: controller_credentials is defined
+      tags: credentials
+
+    - name: Apply projects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_projects
+      when: controller_projects is defined
+      tags: projects
+
+    - name: Apply inventories
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_inventories
+      when: controller_inventories is defined
+      tags: inventories
+
+    - name: Apply hosts
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_hosts
+      when: controller_hosts is defined
+      tags: hosts
+
+    - name: Apply host groups
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_host_groups
+      when: controller_groups is defined
+      tags: host_groups
+
+    - name: Apply job templates
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_job_templates
+      when: controller_templates is defined
+      tags: job_templates
+
+    - name: Apply workflow job templates
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.controller_workflow_job_templates
+      when: controller_workflows is defined
+      tags: workflow_job_templates
