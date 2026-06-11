@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Register with Satellite for RHEL repos (clean stale certs from base image)
+subscription-manager clean
+curl -k -L https://${SATELLITE_URL}/pub/katello-server-ca.crt -o /etc/pki/ca-trust/source/anchors/${SATELLITE_URL}.ca.crt
+update-ca-trust
+rpm -Uhv https://${SATELLITE_URL}/pub/katello-ca-consumer-latest.noarch.rpm
+subscription-manager register --org=${SATELLITE_ORG} --activationkey=${SATELLITE_ACTIVATIONKEY}
+
 systemctl stop systemd-tmpfiles-setup.service
 systemctl disable systemd-tmpfiles-setup.service
 
@@ -113,8 +120,9 @@ chown -R rhel:rhel /home/rhel/ansible-files
 # ## Controller as Code (CaC) setup
 # Create venv with ansible-core 2.16.z (matches ee-supported-rhel9)
 # CaC files are copied to /tmp/controller-as-code/ by setup-automation/main.yml
-dnf install -y python3.11 python3.11-pip
+dnf install -y python3-pip python3.11 python3.11-pip
 python3.11 -m venv /tmp/cac-venv
 /tmp/cac-venv/bin/pip install --quiet --upgrade pip
 /tmp/cac-venv/bin/pip install --quiet "ansible-core~=2.16.0"
+/tmp/cac-venv/bin/ansible-galaxy collection install git+https://github.com/ansible/ansible.platform.git,2.5.20251114
 /tmp/cac-venv/bin/ansible-galaxy collection install infra.aap_configuration:==4.6.0

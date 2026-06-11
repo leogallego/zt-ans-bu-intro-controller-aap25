@@ -73,7 +73,7 @@
       when: r_script_test.stat.exists
       ansible.builtin.shell: >-
         sh -x /tmp/setup-scripts/setup-{{ ansible_host }}.sh
-        > /tmp/setup-scripts/setup-{{ ansible_host }}.log 2>&1
+        2>&1 | tee /tmp/setup-scripts/setup-{{ ansible_host }}.log
       become: true
       register: r_result
       changed_when: r_result.rc == 0
