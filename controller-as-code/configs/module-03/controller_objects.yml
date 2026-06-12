@@ -1,15 +1,12 @@
 ---
 # Module 03: Creating an Inventory
 # Creates: Lab-Inventory, hosts (node1, node2), group (web)
-#
-# Variables use wildcard suffix (_module03) so dispatch can merge
-# them with variables from other modules when loaded cumulatively.
 
-controller_inventories_module03:
+controller_inventories:
   - name: Lab-Inventory
     organization: Default
 
-controller_hosts_module03:
+controller_hosts:
   - name: node1
     inventory: Lab-Inventory
     state: present
@@ -17,7 +14,7 @@ controller_hosts_module03:
     inventory: Lab-Inventory
     state: present
 
-controller_groups_module03:
+controller_groups:
   - name: web
     inventory: Lab-Inventory
     hosts:

@@ -2,18 +2,18 @@
 # Module 08: Creating Multiple Job Templates
 # Creates: node3 host, database group, Extended services and Set motd templates
 
-controller_hosts_module08:
+controller_hosts:
   - name: node3
     inventory: Lab-Inventory
     state: present
 
-controller_groups_module08:
+controller_groups:
   - name: database
     inventory: Lab-Inventory
     hosts:
       - node3
 
-controller_templates_module08:
+controller_templates:
   - name: Extended services
     organization: Default
     state: present

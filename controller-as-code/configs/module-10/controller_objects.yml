@@ -2,7 +2,7 @@
 # Module 10: Creating a Job Template with a Survey
 # Creates: "Install Apache with Survey" job template with survey spec
 
-controller_templates_module10:
+controller_templates:
   - name: Install Apache with Survey
     organization: Default
     state: present

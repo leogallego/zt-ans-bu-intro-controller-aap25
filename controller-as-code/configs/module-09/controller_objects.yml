@@ -2,7 +2,7 @@
 # Module 09: Creating a Workflow Job Template
 # Creates: "Your first workflow" workflow template with 3 nodes
 
-controller_workflows_module09:
+controller_workflows:
   - name: Your first workflow
     description: Create a Workflow from previous Job Templates
     organization: Default

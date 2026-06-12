@@ -2,7 +2,7 @@
 # Module 07: Creating a Second Project
 # Creates: Additional playbooks project
 
-controller_projects_module07:
+controller_projects:
   - name: Additional playbooks
     organization: Default
     state: present
