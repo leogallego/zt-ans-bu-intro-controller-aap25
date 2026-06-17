@@ -41,6 +41,14 @@ tabs:
     url: https://control-${guid}.${domain}/
   - name: ">_ Terminal"
     url: /wetty
+  - name: "Node1 Web"
+    url: https://node1-${guid}.${domain}/index.html
+    modules:
+     - module-06
+  - name: "Node2 Web"
+    url: https://node2-${guid}.${domain}/index.html
+    modules:
+     - module-06
 
 
   # - name: Windows RDP
