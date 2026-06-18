@@ -85,7 +85,7 @@ From `controller-as-code/configs/module-04/controller_objects.yml`:
 [source,yaml]
 ----
 ---
-controller_projects_module04:
+controller_projects:
   - name: Apache playbooks
     organization: Default
     state: present
@@ -95,15 +95,6 @@ controller_projects_module04:
 ----
 
 The `wait: true` parameter ensures the project sync completes before moving on — equivalent to watching the status turn green in the UI.
-
-=== Apply with CaC
-
-To apply this module's configuration (cumulative — also creates the inventory from module 03):
-
-[source,bash]
-----
-ansible-playbook configure_controller_staged.yml -e module=module-04
-----
 
 ---
 

@@ -145,18 +145,18 @@ From `controller-as-code/configs/module-08/controller_objects.yml`:
 [source,yaml]
 ----
 ---
-controller_hosts_module08:
+controller_hosts:
   - name: node3
     inventory: Lab-Inventory
     state: present
 
-controller_groups_module08:
+controller_groups:
   - name: database
     inventory: Lab-Inventory
     hosts:
       - node3
 
-controller_templates_module08:
+controller_templates:
   - name: Extended services
     organization: Default
     state: present
@@ -176,19 +176,7 @@ controller_templates_module08:
     credential: lab-credentials
 ----
 
-The wildcard suffix (`_module08`) ensures these hosts, groups, and templates are merged with those from earlier modules without overwriting them.
-
-=== Apply with CaC
-
-[source,bash]
-----
-ansible-playbook configure_controller_staged.yml -e module=module-08
-----
-
-[TIP]
-====
 With CaC, the `node3` host and `database` group are created **before** the `Extended services` job template, so the failure you experienced in the UI exercise would never occur.
-====
 
 ---
 

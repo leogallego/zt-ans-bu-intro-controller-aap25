@@ -92,22 +92,13 @@ From `controller-as-code/configs/module-07/controller_objects.yml`:
 [source,yaml]
 ----
 ---
-controller_projects_module07:
+controller_projects:
   - name: Additional playbooks
     organization: Default
     state: present
     scm_type: git
     scm_url: https://github.com/ansible-tmm/instruqt-wyfp-additional.git
     wait: true
-----
-
-Because the variable uses a wildcard suffix (`_module07`), the `dispatch` role automatically merges it with `controller_projects_module04` from the earlier module, so both projects are applied together.
-
-=== Apply with CaC
-
-[source,bash]
-----
-ansible-playbook configure_controller_staged.yml -e module=module-07
 ----
 
 ---

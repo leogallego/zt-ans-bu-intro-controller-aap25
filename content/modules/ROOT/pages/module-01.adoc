@@ -14,9 +14,9 @@ Through hands-on exercises, we will demonstrate how easy it is to use the web UI
 
 Before we begin, here are some basic tips to improve your lab experience:
 
-. The **instructions sidebar** (where you are reading this) can be resized by dragging its border or can be completely collapsed by clicking the "Hide instructions" button at the top. This is useful if you need extra space for the main panel.
-+
-image:image.png[Collapsing and expanding the instructions sidebar, opts="border"]
+. The **instructions sidebar** (where you are reading this) can be resized by dragging its border. This is useful if you need extra space for the main panel.
+
+. Make sure to complete the hands-on steps in each challenge before clicking **Next**. Some challenges validate your work, and if something is missing you will see a "validation failed" message with details on what needs to be fixed.
 
 . When you finish a challenge, click the blue **Next** button at the bottom of the instructions to proceed.
 
