@@ -161,7 +161,7 @@ From `controller-as-code/configs/module-09/controller_objects.yml`:
 [source,yaml]
 ----
 ---
-controller_workflows_module09:
+controller_workflows:
   - name: Your first workflow
     description: Create a Workflow from previous Job Templates
     organization: Default
@@ -185,17 +185,6 @@ Notice how the structure maps directly to what you built in the Visualizer:
 * `apache101` is the starting node (Install Apache)
 * `success_nodes` defines the conditional links — both `extended201` and `motd201` run in parallel on success
 * Each `identifier` corresponds to the *Node alias* you set in the UI
-
-=== Apply with CaC
-
-[source,bash]
-----
-# Create the workflow (and all prerequisite objects)
-ansible-playbook configure_controller_staged.yml -e module=module-09
-
-# Launch the workflow
-ansible-playbook configure_controller_launch.yml --tags launch-workflow
-----
 
 ---
 

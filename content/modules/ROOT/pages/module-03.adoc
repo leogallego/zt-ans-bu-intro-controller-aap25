@@ -134,11 +134,11 @@ The following variable file (`controller-as-code/configs/module-03/controller_ob
 [source,yaml]
 ----
 ---
-controller_inventories_module03:
+controller_inventories:
   - name: Lab-Inventory
     organization: Default
 
-controller_hosts_module03:
+controller_hosts:
   - name: node1
     inventory: Lab-Inventory
     state: present
@@ -146,21 +146,12 @@ controller_hosts_module03:
     inventory: Lab-Inventory
     state: present
 
-controller_groups_module03:
+controller_groups:
   - name: web
     inventory: Lab-Inventory
     hosts:
       - node1
       - node2
-----
-
-=== Apply with CaC
-
-To apply this module's configuration using the CaC playbook:
-
-[source,bash]
-----
-ansible-playbook configure_controller_staged.yml -e module=module-03
 ----
 
 The `dispatch` role in `infra.aap_configuration` automatically creates the objects in the correct dependency order: inventory first, then hosts, then groups.

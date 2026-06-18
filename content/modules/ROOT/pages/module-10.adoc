@@ -124,7 +124,7 @@ From `controller-as-code/configs/module-10/controller_objects.yml`:
 [source,yaml]
 ----
 ---
-controller_templates_module10:
+controller_templates:
   - name: Install Apache with Survey
     organization: Default
     state: present
@@ -145,28 +145,6 @@ controller_templates_module10:
           type: text
           required: false
           default: Skippy
-----
-
-=== Apply the Full Workshop with CaC
-
-To apply **all** workshop objects at once (everything from modules 03 through 10):
-
-[source,bash]
-----
-# Apply all controller configuration
-ansible-playbook configure_controller_staged.yml -e module=all
-
-# Or use the full playbook with all objects defined inline
-ansible-playbook configure_controller.yml
-----
-
-=== Validate the Configuration
-
-To verify all objects exist and match the desired state without making changes:
-
-[source,bash]
-----
-ansible-playbook configure_controller.yml --check
 ----
 
 === Summary: UI vs. Controller as Code
