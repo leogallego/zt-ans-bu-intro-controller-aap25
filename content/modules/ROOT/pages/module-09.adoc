@@ -10,7 +10,7 @@ _A guide to connecting all the dots by linking multiple playbooks with condition
 
 == Lab Briefing
 
-A **workflow job template** links together different resources in a graphical way. This can include multiple job templates (playbooks), project syncs, and even other workflows, allowing you to build complex, multi-step automation processes.
+So far, each Job Template runs a single playbook independently. A **Workflow Job Template** lets you connect multiple Job Templates into a single automated pipeline — with conditional logic, parallel execution, and error handling built in.
 
 image::wf-templates-home-with-example-wf-template.png[Workflow Job Templates list view, opts="border"]
 
@@ -18,7 +18,7 @@ image::wf-templates-home-with-example-wf-template.png[Workflow Job Templates lis
 
 == Lab Guide
 
-A **Workflow Job Template** is a series of connected automation tasks that are executed in a specific order. While a standard Job Template handles a single playbook, a Workflow Job Template is designed for more complex scenarios involving multiple playbooks and decision-making processes.
+A **Workflow Job Template** orchestrates multiple automation steps in a defined order. You design the flow graphically using the *Workflow Visualizer*, where each step can run on success, on failure, or unconditionally after the previous one.
 
 Workflows can orchestrate various node types, including:
 
@@ -29,7 +29,7 @@ Workflows can orchestrate various node types, including:
 
 [WARNING]
 ====
-Remember not to confuse a **Job Template**, a **Jinja template**, and a **Workflow Job Template**. They are three separate concepts.
+As noted in the Job Templates challenge, a **Workflow Job Template** is different from both a **Job Template** (which runs a single playbook) and a **Jinja2 template** (which generates dynamic file content inside playbooks). These are three separate concepts.
 ====
 
 [IMPORTANT]
@@ -201,8 +201,8 @@ ansible-playbook configure_controller_launch.yml --tags launch-workflow
 
 == Next Steps
 
-Press the `Check` button below to proceed to the next challenge.
+Press the blue **Next** button below to proceed to the next challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Intro+to+Controller+slug+ID:+controller-101-inventory+AAP25&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

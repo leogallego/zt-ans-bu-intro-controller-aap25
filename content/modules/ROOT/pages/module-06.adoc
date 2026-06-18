@@ -20,11 +20,11 @@ image::job-templates-home-with-example-job-template.png[Job Templates list view 
 
 A **Job Template** is a definition and set of parameters for running an Ansible Playbook. Job Templates are useful for executing the same job many times while also encouraging the reuse of Ansible content and collaboration between teams.
 
-To create a Job Template, you need a **Project** to source your playbooks from, which you created in the previous challenge. While a Project might contain multiple playbooks, a Job Template can only run one playbook at a time.
+Now that you have an **Inventory** with managed hosts, a **Project** with playbooks, and **Credentials** for authentication, you have all the building blocks needed to create and launch your first Job Template. While a Project might contain multiple playbooks, a Job Template runs one playbook at a time.
 
 [WARNING]
 ====
-Do not confuse a **Job Template** with a **Jinja template**. Jinja templates are files used to create dynamic content (like configuration files) by replacing variables during runtime. They are different concepts.
+Do not confuse a **Job Template** with a **Jinja2 template**. A Job Template is a controller object that defines how to run a playbook. A Jinja2 template is a file used inside playbooks to generate dynamic content (like configuration files) by replacing variables at runtime.
 ====
 
 [IMPORTANT]
@@ -147,8 +147,8 @@ The CaC playbooks separate **configuration** (idempotent, safe to re-run) from *
 
 == Next Steps
 
-Press the `Check` button below to proceed to the next challenge.
+Press the blue **Next** button below to proceed to the next challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Intro+to+Controller+slug+ID:+controller-101-inventory+AAP25&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

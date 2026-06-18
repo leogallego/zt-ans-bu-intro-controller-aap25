@@ -1,4 +1,4 @@
-= Module 4: Creating Your First Project
+= Module 4: Creating your first Project
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -109,8 +109,8 @@ ansible-playbook configure_controller_staged.yml -e module=module-04
 
 == Next Steps
 
-Press the `Check` button below to proceed to the next challenge.
+Press the blue **Next** button below to proceed to the next challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Intro+to+Controller+slug+ID:+controller-101-inventory+AAP25&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].
