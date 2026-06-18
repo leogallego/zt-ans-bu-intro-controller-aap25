@@ -1,4 +1,4 @@
-= Lab Guide: Creating a Workflow Job Template
+= Module 9: Creating a Workflow Job Template
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -16,7 +16,7 @@ image::wf-templates-home-with-example-wf-template.png[Workflow Job Templates lis
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 A **Workflow Job Template** is a series of connected automation tasks that are executed in a specific order. While a standard Job Template handles a single playbook, a Workflow Job Template is designed for more complex scenarios involving multiple playbooks and decision-making processes.
 

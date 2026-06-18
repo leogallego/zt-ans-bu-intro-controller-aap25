@@ -1,4 +1,4 @@
-= Lab Guide: Creating a Job Template with a Survey
+= Module 10: Creating a Job Template with a Survey
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -16,7 +16,7 @@ image::job-templates-home-with-example-job-template.png[Job Templates list view 
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 In this challenge, you will explore the **Survey** feature. Surveys allow you to prompt for user input when a Job Template is launched, making it possible to change a parameter or setting for each run. You will use a survey to customize the `index.html` file deployed by the Apache playbook.
 

@@ -1,4 +1,4 @@
-= Lab Guide: Understanding Credentials
+= Module 5: Understanding Credentials
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -16,7 +16,7 @@ image::credentials-demo-edit-details.png[Details of a machine credential, opts="
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 **Credentials** are utilized by Ansible Automation Platform for authentication when launching jobs against devices, syncing with inventory sources, or importing projects from version control.
 

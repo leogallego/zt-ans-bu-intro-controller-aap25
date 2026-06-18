@@ -1,4 +1,4 @@
-= Lab Guide: Creating a Job Template
+= Module 6: Creating a Job Template
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -16,7 +16,7 @@ image::job-templates-home-with-example-job-template.png[Job Templates list view 
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 A **Job Template** is a definition and set of parameters for running an Ansible Playbook. Job Templates are useful for executing the same job many times while also encouraging the reuse of Ansible content and collaboration between teams.
 

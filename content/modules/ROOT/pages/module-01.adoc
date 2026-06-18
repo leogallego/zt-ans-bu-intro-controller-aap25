@@ -1,4 +1,4 @@
-= Welcome to Ansible Automation Platform Interactive Labs
+= Module 1: Welcome to AAP Controller 101
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:

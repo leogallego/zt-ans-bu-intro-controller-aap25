@@ -1,4 +1,4 @@
-= Lab Guide: Introduction to Automation Controller
+= Module 2: Introduction to Automation Controller
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -36,7 +36,7 @@ image::Oct-16-2024_at_02.12.32-image.png[Schedules view in automation controller
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 Welcome to the *Introduction to automation controller* lab. In the following challenges, you will build upon the work from the _Writing your first playbook_ lab and learn how to run your Ansible Playbooks through the web UI.
 

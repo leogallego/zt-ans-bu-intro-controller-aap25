@@ -1,4 +1,4 @@
-= Lab Guide: Creating a Second Project
+= Module 7: Creating a Second Project
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -16,7 +16,7 @@ image::projects-list-all.png[Projects list view in automation controller, opts="
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 You already have a Project named `Apache playbooks` from a previous challenge. In this new challenge, you will create a second project named `Additional playbooks` which will import playbooks to install other services (`extended_services.yml`), set a message of the day (`motd_facts.yml`), and create multiple users (`loop_users.yml`).
 

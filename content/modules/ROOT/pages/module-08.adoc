@@ -1,4 +1,4 @@
-= Lab Guide: Creating Multiple Job Templates
+= Module 8: Creating Multiple Job Templates
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -16,7 +16,7 @@ image::job-templates-home-with-example-job-template.png[Job Templates list view 
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 Let's use what you learned previously to create a second and third **Job Template**.
 

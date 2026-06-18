@@ -1,4 +1,4 @@
-= Lab Guide: Creating an Inventory
+= Module 3: Creating an Inventory
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -24,7 +24,7 @@ image::Oct-16-2024_at_02.39.47-image.png[Creating a new inventory, opts="border"
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 An inventory is a collection of hosts against which jobs (like playbooks) may be launched. This is the same concept as an Ansible inventory file, but with a powerful UI and additional features.
 
