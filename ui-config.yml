@@ -29,7 +29,7 @@ antora:
       label: "Creating a second and third Job Template"
       solveButton: true
     - name: module-09
-      label: "Creating a Workflow Job Tempalte"
+      label: "Creating a Workflow Job Template"
       solveButton: true
     - name: module-10
       label: "Creating a Job Template with a Survey"
