@@ -1,0 +1,23 @@
+---
+# Validate workflow template exists using state=exists
+# CaC --check mode always reports changed for workflow node
+# relationships, so we use the controller module directly.
+#
+# Usage:
+#   ansible-playbook configure_controller_validate_workflow.yml
+- name: Validate workflow template exists
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+  tasks:
+    - name: Check Your first workflow exists
+      ansible.controller.workflow_job_template:
+        name: Your first workflow
+        organization: Default
+        state: exists
+        controller_host: "{{ aap_hostname }}"
+        controller_username: "{{ aap_username }}"
+        controller_password: "{{ aap_password }}"
+        validate_certs: "{{ aap_validate_certs }}"
