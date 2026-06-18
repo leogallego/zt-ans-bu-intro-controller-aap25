@@ -1,1 +1,118 @@
+= Introduction to Ansible Automation Controller 2.5
 
+A hands-on workshop for the https://demo.redhat.com[Red Hat Demo Platform (RHDP)] teaching core Automation Controller features through 10 progressive modules.
+
+Students start with an empty controller and build a complete automation setup: inventories, projects, credentials, job templates, workflows, and surveys — all through the web UI. Each module includes a *Controller as Code* section showing the equivalent declarative YAML.
+
+== Workshop Modules
+
+[cols="1,3,3"]
+|===
+| Module | Topic | What Students Build
+
+| 01
+| Welcome to AAP Controller 101
+| Lab tips, exercise agenda, CaC introduction
+
+| 02
+| Introduction to Automation Controller
+| Explore the dashboard, inventories, and projects
+
+| 03
+| Creating an Inventory
+| `Lab-Inventory` with hosts `node1`, `node2` and group `web`
+
+| 04
+| Creating your first Project
+| `Apache playbooks` project (Git repository)
+
+| 05
+| Understanding Credentials
+| Explore pre-loaded `lab-credentials` (Machine type)
+
+| 06
+| Creating a Job Template
+| `Install Apache` template — first playbook run
+
+| 07
+| Creating a second Project
+| `Additional playbooks` project (Git repository)
+
+| 08
+| Creating multiple Job Templates
+| `Extended services` and `Set motd` templates, plus inventory troubleshooting
+
+| 09
+| Creating a Workflow Job Template
+| `Your first workflow` — parallel and conditional execution
+
+| 10
+| Creating a Job Template with a Survey
+| `Install Apache with Survey` — runtime user input
+|===
+
+== Architecture
+
+The lab has three automation layers:
+
+`setup-automation/`:: One-time provisioning. Copies `controller-as-code/` to the control node, installs collections, and configures SSH and Gitea.
+
+`runtime-automation/`:: Per-module lifecycle scripts. Each module can have `solve`, `validation`, and `setup` scripts. Solve scripts run the CaC staged playbook to create all objects up to that module. Validation scripts run the same playbook with `--check` to verify student work.
+
+`controller-as-code/`:: Single source of truth for all Controller objects as declarative YAML. The staged playbook (`configure_controller_staged.yml`) loads modules cumulatively — running `-e module=module-09` applies everything from module 03 through 09.
+
+=== Lab Infrastructure
+
+Defined in `config/`:
+
+* **control** — AAP 2.5 (`base-zero-aap-2.5-container-ce`, 16G RAM, 4 cores)
+* **node1, node2, node3** — RHEL 9.5 managed hosts (2G RAM, 2 cores each)
+* **gitea** — Git server container hosting playbook repositories
+
+== Building the Lab Content
+
+Lab content is AsciiDoc under `content/modules/ROOT/pages/`, built with https://antora.org[Antora].
+
+[source,bash]
+----
+# Build the documentation site (requires podman)
+utilities/lab-build
+
+# Serve locally at http://localhost:8080/index.html
+utilities/lab-serve
+
+# Stop the local server
+utilities/lab-stop
+
+# Remove generated site
+utilities/lab-clean
+----
+
+== Controller as Code
+
+All Controller objects can be applied declaratively from `controller-as-code/`:
+
+[source,bash]
+----
+# Install required collections
+ansible-galaxy collection install -r collections/requirements.yml
+
+# Apply all objects at once
+ansible-playbook configure_controller.yml
+
+# Apply up to a specific module (cumulative)
+ansible-playbook configure_controller_staged.yml -e module=module-06
+
+# Validate without changes
+ansible-playbook configure_controller.yml --check
+
+# Launch jobs after configuration
+ansible-playbook configure_controller_launch.yml --tags launch-apache
+ansible-playbook configure_controller_launch.yml --tags launch-workflow
+----
+
+Key collections: `infra.aap_configuration`, `ansible.controller`, `ansible.platform`.
+
+== Contributing
+
+If you encounter an issue, please https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

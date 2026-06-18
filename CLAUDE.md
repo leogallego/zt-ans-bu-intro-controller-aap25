@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-An Instruqt hands-on workshop teaching AAP Automation Controller 2.5 through 10 progressive modules. The `controller-tasks-to-casc` branch replaces the original monolithic shell/playbook approach with **Controller as Code (CaC)** using the `infra.aap_configuration` collection. All Controller object management (inventories, credentials, projects, templates, workflows) is now declarative YAML.
+An RHDP (Red Hat Demo Platform) hands-on workshop teaching AAP Automation Controller 2.5 through 10 progressive modules. All Controller object management (inventories, credentials, projects, templates, workflows) is declarative YAML using **Controller as Code (CaC)** with the `infra.aap_configuration` collection.
 
 ## Lab Content Commands
 
@@ -22,7 +22,7 @@ utilities/lab-stop
 utilities/lab-clean
 ```
 
-The doc build uses podman with the `antora/antora` image. The server uses `ubi9/httpd-24`.
+The doc build uses podman with the `antora/antora` image. The server uses `ubi9/httpd-24`. The `www/` directory is gitignored — it is generated at build/provision time.
 
 ## Controller as Code Commands
 
@@ -102,7 +102,7 @@ Modules 01-02 are informational (no Controller objects). Modules 03-10 each add 
 
 ## Content Authoring
 
-Lab content is AsciiDoc under `content/modules/ROOT/pages/module-XX.adoc`, built with Antora. Site config is in `site.yml`, component descriptor in `content/antora.yml`. The `ui-config.yml` and images under `content/modules/ROOT/assets/images/` support the UI.
+Lab content is AsciiDoc under `content/modules/ROOT/pages/module-XX.adoc`, built with Antora. Site config is in `site.yml`, component descriptor in `content/antora.yml`. Images live under `content/modules/ROOT/assets/images/`.
 
 ## Platform Config
 
@@ -111,4 +111,4 @@ Lab infrastructure is defined in `config/`:
 - `networks.yaml` -- Network topology
 - `firewall.yaml` -- Firewall rules
 
-The control VM uses the `base-zero-aap-2.5-container-ce` image with 16G RAM / 4 cores.
+The control VM uses the `base-zero-aap-2.5-container-ce` image with 16G RAM / 4 cores. Managed nodes (node1-3) are RHEL 9.5 with 2G RAM / 2 cores each.
