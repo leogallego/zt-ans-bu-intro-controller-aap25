@@ -44,7 +44,7 @@ First, you will create a new, empty inventory to hold your managed nodes.
 
 . **Navigate to the Inventories page.**
 +
-In the left navigation menu, go to **Infrastructure** → **Inventories**.
+In the left navigation menu, go to **Automation Execution** → **Infrastructure** → **Inventories**.
 
 . **Create a new inventory.**
 +
@@ -169,8 +169,8 @@ The `dispatch` role in `infra.aap_configuration` automatically creates the objec
 
 == Next Steps
 
-Press the `Check` button below to proceed to the next challenge.
+Press the blue **Next** button below to proceed to the next challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Intro+to+Controller+slug+ID:+controller-101-inventory+AAP25&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

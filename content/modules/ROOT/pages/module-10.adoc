@@ -10,7 +10,7 @@ _A guide to creating a fourth Job Template for installing Apache, this time incl
 
 == Lab Briefing
 
-In the automation controller, **job templates** are a visual representation of the `ansible-playbook` command and all the flags you can use when executing from the command line. They are the primary mechanism for running your Ansible Playbooks.
+In this final challenge, you will explore one more powerful feature of Job Templates: **Surveys**. Surveys let you prompt users for input when launching a job, making it possible to customize parameters for each run — without editing the playbook itself.
 
 image::job-templates-home-with-example-job-template.png[Job Templates list view in automation controller, opts="border"]
 
@@ -18,7 +18,7 @@ image::job-templates-home-with-example-job-template.png[Job Templates list view 
 
 == Lab Guide
 
-In this challenge, you will explore the **Survey** feature. Surveys allow you to prompt for user input when a Job Template is launched, making it possible to change a parameter or setting for each run. You will use a survey to customize the `index.html` file deployed by the Apache playbook.
+A **Survey** adds a user-friendly input form to a Job Template. When the template is launched, the survey prompts for values that are passed to the playbook as extra variables. In this challenge, you will use a survey to customize the `index.html` file deployed by the Apache playbook with your name.
 
 [IMPORTANT]
 ====
@@ -206,9 +206,11 @@ ansible-playbook configure_controller.yml --check
 
 You have finished the lab successfully! 🎉
 
+Starting from an empty automation controller, you built a complete automation setup: an **Inventory** with managed hosts, **Projects** importing playbooks from Git, **Credentials** for secure authentication, **Job Templates** to run those playbooks, a **Workflow** chaining multiple templates with conditional logic, and a **Survey** to collect user input at runtime.
+
 [IMPORTANT]
 ====
-Remember to press the green **Check**, **Next**, or **Skip** button below to complete the lab. We appreciate all feedback!
+Remember to press the blue **Next** button below to complete the lab. We appreciate all feedback!
 ====
 
 === Claim Your Badge
@@ -225,4 +227,4 @@ Once you sign up, remember to introduce yourself in link:https://forum.ansible.c
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Intro+to+Controller+slug+ID:+controller-101-inventory+AAP25&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

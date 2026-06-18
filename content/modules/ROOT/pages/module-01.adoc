@@ -10,16 +10,6 @@ Through hands-on exercises, we will demonstrate how easy it is to use the web UI
 
 ---
 
-== Automation Platform Overview
-
-The **Overview** screen is the main dashboard of the automation controller. It shows a summary of your hosts, projects, and inventories, with each count being a direct link to the corresponding objects for easy access. Below the resource counts, you will find a Job Activity graph and a card-like summary of recent Jobs, Projects, and Inventories.
-
-We will go through all of these sections in the upcoming challenges.
-
-image::Oct-16-2024_at_02.01.47-image.png[Automation controller overview dashboard, opts="border"]
-
----
-
 == Laboratory Tips
 
 Before we begin, here are some basic tips to improve your lab experience:
@@ -28,15 +18,29 @@ Before we begin, here are some basic tips to improve your lab experience:
 +
 image:image.png[Collapsing and expanding the instructions sidebar, opts="border"]
 
-. When you finish a challenge, you must click the green **Check** (or **Next**) button at the bottom of the instructions to proceed.
+. When you finish a challenge, click the blue **Next** button at the bottom of the instructions to proceed.
 
-. You have the option to **Skip** a challenge. Keep in mind this will auto-complete the exercises for that section.
-
-. The lab has a **55-minute limit** that can be extended. If you need more time, make sure to accept the pop-up when it appears.
+. If you get stuck, click **Solve** to auto-complete the current challenge for you. This sets up all the objects needed so you can continue with the next challenge.
 
 . You will find the credentials to log into the automation controller in the next challenge.
 
-. To begin the exercises, click the green button labeled **Next** below.
+. To begin the exercises, click the blue **Next** button below.
+
+---
+
+== What You'll Build
+
+Here is a preview of the exercises ahead. Each challenge builds on the previous one, so by the end of the lab you will have a fully operational automation setup:
+
+. **Explore the Dashboard** — Get familiar with the automation controller web UI, its main sections, and navigation.
+. **Create an Inventory** — Define the hosts and groups that your playbooks will target.
+. **Import a Project** — Connect a Git repository containing Ansible Playbooks into the controller.
+. **Explore Credentials** — See how the controller securely stores and manages authentication for your managed hosts.
+. **Create a Job Template** — Bring your inventory, project, and credentials together to run a playbook from the web UI.
+. **Import a second Project** — Add another Git repository with additional playbooks for upcoming challenges.
+. **Create more Job Templates** — Build on what you've learned by creating templates that use different playbooks and target different hosts.
+. **Build a Workflow** — Chain multiple job templates together with conditional logic and parallel execution.
+. **Add a Survey** — Prompt for user input at launch time to customize each job run.
 
 ---
 
@@ -57,4 +61,4 @@ At the end of each challenge, you will find a *Controller as Code Alternative* s
 
 == Troubleshooting
 
-If you encounter an issue, please notify the lab facilitator for assistance.
+If you encounter an issue, please notify the lab facilitator for assistance or link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

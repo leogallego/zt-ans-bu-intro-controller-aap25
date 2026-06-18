@@ -1,4 +1,4 @@
-= Module 8: Creating Multiple Job Templates
+= Module 8: Creating multiple Job Templates
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -10,7 +10,7 @@ _A guide to creating a second and third Job Template to run different playbooks 
 
 == Lab Briefing
 
-In the automation controller, **job templates** are a visual representation of the `ansible-playbook` command and all the flags you can use when executing from the command line. They are the primary mechanism for running your Ansible Playbooks.
+In this challenge, you will put your experience to work by creating two more **Job Templates**. Unlike the first one, these templates use playbooks from the `Additional playbooks` project and target different hosts and groups — including one that doesn't exist yet in your inventory. You will also troubleshoot a common issue: what happens when a playbook expects a host that isn't defined.
 
 image::job-templates-home-with-example-job-template.png[Job Templates list view in automation controller, opts="border"]
 
@@ -18,10 +18,10 @@ image::job-templates-home-with-example-job-template.png[Job Templates list view 
 
 == Lab Guide
 
-Let's use what you learned previously to create a second and third **Job Template**.
+You will create two new Job Templates using playbooks from the `Additional playbooks` project:
 
-* Your second Job Template, `Extended services`, will use the `extended_services.yml` playbook to deploy a PostgreSQL database to `node3`.
-* Your third Job Template, `Set motd`, will use the `motd_facts.yml` playbook to set a message of the day on `node1`.
+* `Extended services` will use `extended_services.yml` to deploy a PostgreSQL database to `node3`.
+* `Set motd` will use `motd_facts.yml` to set a message of the day on `node1`.
 
 NOTE: This exercise demonstrates how you can use different playbooks from the same Project in multiple Job Templates.
 
@@ -109,6 +109,7 @@ Go to **Automation Execution** → **Templates**.
 Fill out the form with the following information:
 +
 * **Name:** `Set motd`
+* **Job Type:** `Run`
 * **Inventory:** `Lab-Inventory`
 * **Project:** `Additional playbooks`
 * **Playbook:** `motd_facts.yml`
@@ -193,8 +194,8 @@ With CaC, the `node3` host and `database` group are created **before** the `Exte
 
 == Next Steps
 
-Press the `Check` button below to proceed to the next challenge.
+Press the blue **Next** button below to proceed to the next challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/instruqt/issues/new?labels=controller-101&title=controller-101+slug+ID:+controller-101-template-extended&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].
