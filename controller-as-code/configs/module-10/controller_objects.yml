@@ -1,0 +1,25 @@
+---
+# Module 10: Creating a Job Template with a Survey
+# Creates: "Install Apache with Survey" job template with survey spec
+
+controller_templates:
+  - name: Install Apache with Survey
+    organization: Default
+    state: present
+    inventory: Lab-Inventory
+    become_enabled: true
+    playbook: apache_template.yml
+    project: Apache playbooks
+    credential: lab-credentials
+    survey_enabled: true
+    survey_spec:
+      name: Apache Survey
+      description: Survey for Apache template deployment
+      spec:
+        - question_name: "What is your name, fellow student?"
+          question_description: >-
+            Enter your name or nickname to see it work!
+          variable: student_name
+          type: text
+          required: false
+          default: Skippy

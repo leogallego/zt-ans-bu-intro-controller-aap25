@@ -5,34 +5,34 @@ antora:
   dir: www
   modules:
     - name: module-01
-      label: "Workshop Tips"
+      label: "1 - Workshop Tips"
       solveButton: false
     - name: module-02
-      label: "Exploring the web-UI and Dashboard"
+      label: "2 - Exploring the web-UI and Dashboard"
       solveButton: false
     - name: module-03
-      label: "Creating an Inventory"
+      label: "3 - Creating an Inventory"
       solveButton: true
     - name: module-04
-      label: "Creating your first Project"
+      label: "4 - Creating your first Project"
       solveButton: true
     - name: module-05
-      label: "Get to know Credentials"
+      label: "5 - Get to know Credentials"
       solveButton: true
     - name: module-06
-      label: "Creating a Job Template"
+      label: "6 - Creating a Job Template"
       solveButton: true
     - name: module-07
-      label: "Creating a second Project"
+      label: "7 - Creating a second Project"
       solveButton: true
     - name: module-08
-      label: "Creating a second and third Job Template"
+      label: "8 - Creating a second and third Job Template"
       solveButton: true
     - name: module-09
-      label: "Creating a Workflow Job Tempalte"
+      label: "9 - Creating a Workflow Job Template"
       solveButton: true
     - name: module-10
-      label: "Creating a Job Template with a Survey"
+      label: "10 - Creating a Job Template with a Survey"
       solveButton: true
 
 
@@ -41,6 +41,14 @@ tabs:
     url: https://control-${guid}.${domain}/
   - name: ">_ Terminal"
     url: /wetty
+  - name: "Node1 Web"
+    url: https://node1-${guid}.${domain}/index.html
+    modules:
+     - module-06
+  - name: "Node2 Web"
+    url: https://node2-${guid}.${domain}/index.html
+    modules:
+     - module-06
 
 
   # - name: Windows RDP

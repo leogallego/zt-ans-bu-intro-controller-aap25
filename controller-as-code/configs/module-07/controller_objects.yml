@@ -1,0 +1,11 @@
+---
+# Module 07: Creating a Second Project
+# Creates: Additional playbooks project
+
+controller_projects:
+  - name: Additional playbooks
+    organization: Default
+    state: present
+    scm_type: git
+    scm_url: https://github.com/ansible-tmm/instruqt-wyfp-additional.git
+    wait: true

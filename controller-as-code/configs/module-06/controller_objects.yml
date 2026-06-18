@@ -1,0 +1,13 @@
+---
+# Module 06: Creating a Job Template
+# Creates: Install Apache job template
+
+controller_templates:
+  - name: Install Apache
+    organization: Default
+    state: present
+    inventory: Lab-Inventory
+    become_enabled: true
+    playbook: apache.yml
+    project: Apache playbooks
+    credential: lab-credentials

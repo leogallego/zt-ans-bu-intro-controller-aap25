@@ -1,0 +1,11 @@
+---
+# Module 04: Creating Your First Project
+# Creates: Apache playbooks project
+
+controller_projects:
+  - name: Apache playbooks
+    organization: Default
+    state: present
+    scm_type: git
+    scm_url: https://github.com/ansible-tmm/instruqt-wyfp.git
+    wait: true

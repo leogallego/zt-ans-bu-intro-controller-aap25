@@ -1,4 +1,4 @@
-= Lab Guide: Creating a Second Project
+= Module 7: Creating a second Project
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -10,15 +10,15 @@ _A guide to importing a second repository into a new project in the automation c
 
 == Lab Briefing
 
-A **Project** is a logical collection of Ansible Playbooks. You can manage playbooks by placing them into a source code management (SCM) system supported by the automation controller, such as Git, Subversion, or even Red Hat Insights.
+You already know how to create a **Project** — you did it when you imported the `Apache playbooks` repository. In this challenge, you will repeat the process with a different Git repository containing additional playbooks for upcoming exercises.
 
 image::projects-list-all.png[Projects list view in automation controller, opts="border"]
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
-You already have a Project named `Apache playbooks` from a previous challenge. In this new challenge, you will create a second project named `Additional playbooks` which will import playbooks to install other services (`extended_services.yml`), set a message of the day (`motd_facts.yml`), and create multiple users (`loop_users.yml`).
+Your new project, `Additional playbooks`, will import a repository with playbooks to install extended services (`extended_services.yml`), set a message of the day (`motd_facts.yml`), and create multiple users (`loop_users.yml`). This reinforces the project creation workflow while setting up the content you will need in the next challenges.
 
 [IMPORTANT]
 ====
@@ -81,10 +81,41 @@ b. **Click** on the **Successful** status text to review the output of the sync 
 
 ---
 
+== Controller as Code Alternative
+
+Adding a second project is simply another entry in a variable file. The `dispatch` role handles syncing automatically.
+
+=== YAML Definition
+
+From `controller-as-code/configs/module-07/controller_objects.yml`:
+
+[source,yaml]
+----
+---
+controller_projects_module07:
+  - name: Additional playbooks
+    organization: Default
+    state: present
+    scm_type: git
+    scm_url: https://github.com/ansible-tmm/instruqt-wyfp-additional.git
+    wait: true
+----
+
+Because the variable uses a wildcard suffix (`_module07`), the `dispatch` role automatically merges it with `controller_projects_module04` from the earlier module, so both projects are applied together.
+
+=== Apply with CaC
+
+[source,bash]
+----
+ansible-playbook configure_controller_staged.yml -e module=module-07
+----
+
+---
+
 == Next Steps
 
-Press the `Check` button below to proceed to the next challenge.
+Press the blue **Next** button below to proceed to the next challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Intro+to+Controller+slug+ID:+controller-101-inventory+AAP25&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

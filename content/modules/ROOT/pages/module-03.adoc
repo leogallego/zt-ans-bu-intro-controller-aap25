@@ -1,4 +1,4 @@
-= Lab Guide: Creating an Inventory
+= Module 3: Creating an Inventory
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -24,7 +24,7 @@ image::Oct-16-2024_at_02.39.47-image.png[Creating a new inventory, opts="border"
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
 An inventory is a collection of hosts against which jobs (like playbooks) may be launched. This is the same concept as an Ansible inventory file, but with a powerful UI and additional features.
 
@@ -44,7 +44,7 @@ First, you will create a new, empty inventory to hold your managed nodes.
 
 . **Navigate to the Inventories page.**
 +
-In the left navigation menu, go to **Infrastructure** → **Inventories**.
+In the left navigation menu, go to **Automation Execution** → **Infrastructure** → **Inventories**.
 
 . **Create a new inventory.**
 +
@@ -123,10 +123,54 @@ You should now see both `node1` and `node2` listed in the *Hosts* tab for the `w
 
 ---
 
+== Controller as Code Alternative
+
+Everything you just created through the UI — the inventory, hosts, and group — can be defined as declarative YAML and applied automatically using the `infra.aap_configuration` collection.
+
+=== YAML Definition
+
+The following variable file (`controller-as-code/configs/module-03/controller_objects.yml`) defines the same objects:
+
+[source,yaml]
+----
+---
+controller_inventories_module03:
+  - name: Lab-Inventory
+    organization: Default
+
+controller_hosts_module03:
+  - name: node1
+    inventory: Lab-Inventory
+    state: present
+  - name: node2
+    inventory: Lab-Inventory
+    state: present
+
+controller_groups_module03:
+  - name: web
+    inventory: Lab-Inventory
+    hosts:
+      - node1
+      - node2
+----
+
+=== Apply with CaC
+
+To apply this module's configuration using the CaC playbook:
+
+[source,bash]
+----
+ansible-playbook configure_controller_staged.yml -e module=module-03
+----
+
+The `dispatch` role in `infra.aap_configuration` automatically creates the objects in the correct dependency order: inventory first, then hosts, then groups.
+
+---
+
 == Next Steps
 
-Press the `Check` button below to proceed to the next challenge.
+Press the blue **Next** button below to proceed to the next challenge.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+Intro+to+Controller+slug+ID:+controller-101-inventory+AAP25&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

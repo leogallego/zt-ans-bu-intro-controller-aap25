@@ -1,0 +1,33 @@
+---
+# Module 08: Creating Multiple Job Templates
+# Creates: node3 host, database group, Extended services and Set motd templates
+
+controller_hosts:
+  - name: node3
+    inventory: Lab-Inventory
+    state: present
+
+controller_groups:
+  - name: database
+    inventory: Lab-Inventory
+    hosts:
+      - node3
+
+controller_templates:
+  - name: Extended services
+    organization: Default
+    state: present
+    inventory: Lab-Inventory
+    become_enabled: true
+    playbook: extended_services.yml
+    project: Additional playbooks
+    credential: lab-credentials
+
+  - name: Set motd
+    organization: Default
+    state: present
+    inventory: Lab-Inventory
+    become_enabled: true
+    playbook: motd_facts.yml
+    project: Additional playbooks
+    credential: lab-credentials

@@ -2,7 +2,7 @@
 site:
   title: Introduction to Ansible Automation Controller 2.5
   url: https://redhat-scholars.github.io/course-template
-  start_page: modules::index.adoc
+  start_page: modules::module-01.adoc
 
 content:
   sources:

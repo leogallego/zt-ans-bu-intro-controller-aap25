@@ -1,4 +1,4 @@
-= Lab Guide: Introduction to Automation Controller
+= Module 2: Introduction to Automation Controller
 :notoc:
 :toc-title: Table of Contents
 :nosectnums:
@@ -36,9 +36,9 @@ image::Oct-16-2024_at_02.12.32-image.png[Schedules view in automation controller
 
 ---
 
-== Lab Guide: Hands-On Tasks
+== Lab Guide
 
-Welcome to the *Introduction to automation controller* lab. In the following challenges, you will build upon the work from the _Writing your first playbook_ lab and learn how to run your Ansible Playbooks through the web UI.
+Welcome to the *Introduction to automation controller* lab. In the following challenges, you will learn how to run your Ansible Playbooks through the automation controller's web UI — from creating inventories and importing projects to building job templates and workflows.
 
 The new unified UI has several sections, but for this lab, we will focus on the **Automation Execution (Automation controller)** view.
 
@@ -76,7 +76,7 @@ An **inventory** is a collection of hosts against which playbooks can be run. It
 
 . **Navigate to the Inventories page.**
 +
-Click on the **Inventories** link from the *Overview* page or from the left navigation menu under **Infrastructure** → **Inventories**.
+Click on the **Inventories** link from the *Overview* page or from the left navigation menu under **Automation Execution** → **Infrastructure** → **Inventories**.
 
 . **Explore the Demo Inventory.**
 +
@@ -96,10 +96,16 @@ Click on the **Demo Project** that comes pre-loaded. Examine the different field
 
 ---
 
+== Controller as Code Alternative
+
+The Demo Inventory and Demo Project you explored in this challenge come pre-loaded with the automation controller. In a CaC approach, even these default objects can be managed declaratively. Starting from the next challenge, you will see how every object you create through the UI has an equivalent YAML representation using the `infra.aap_configuration` collection.
+
+---
+
 == Next Steps
 
-Press the `Next` button below to proceed to the next challenge.
+In the next challenge, you will create your own inventory and add hosts to manage. Press the blue **Next** button below to continue.
 
 == Troubleshooting
 
-If you have encountered an issue or have noticed something not quite right, please link:https://github.com/ansible/workshops/issues/new?labels=controller-101&title=Issue+with+controller-101-dashboard+AAP25&assignees=leogallego[open an issue on GitHub].
+If you have encountered an issue or have noticed something not quite right, please link:https://github.com/rhpds/zt-ans-bu-intro-controller-aap25/issues[open an issue on GitHub].

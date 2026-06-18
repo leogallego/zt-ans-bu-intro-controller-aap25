@@ -1,0 +1,178 @@
+---
+# Staged Controller as Code playbook
+# Applies workshop objects progressively, one module at a time
+# Each module is its own play with vars_files to preserve Jinja2 lazy evaluation
+#
+# Usage:
+#   # Apply up to a specific module (cumulative, includes all prior modules)
+#   ansible-playbook configure_controller_staged.yml -e module=module-06
+#
+#   # Apply all modules
+#   ansible-playbook configure_controller_staged.yml -e module=all
+#
+#   # Check mode with tag filtering (used by validation scripts)
+#   ansible-playbook configure_controller_staged.yml -e module=module-08 --check --tags job_templates
+#
+# Module progression:
+#   module-03: Inventory, hosts (node1, node2), group (web)
+#   module-04: Project (Apache playbooks)
+#   module-05: Credential (lab-credentials)
+#   module-06: Job Template (Install Apache)
+#   module-07: Project (Additional playbooks)
+#   module-08: Host (node3), group (database), Job Templates (Extended services, Set motd)
+#   module-09: Workflow (Your first workflow)
+#   module-10: Job Template with Survey (Install Apache with Survey)
+#
+- name: Validate module parameter
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    module: ""
+    __module_load_order:
+      - module-03
+      - module-04
+      - module-05
+      - module-06
+      - module-07
+      - module-08
+      - module-09
+      - module-10
+  tasks:
+    - name: Validate module parameter
+      ansible.builtin.assert:
+        that:
+          - module | length > 0
+          - module == 'all' or module in __module_load_order
+        fail_msg: >-
+          Please specify a valid module with -e module=<module-name>.
+          Valid values: {{ __module_load_order | join(', ') }}, all
+      tags: always
+
+    - name: Determine modules to load
+      ansible.builtin.set_fact:
+        __modules_to_load: >-
+          {{
+            __module_load_order
+            if module == 'all'
+            else __module_load_order[:(__module_load_order.index(module) + 1)]
+          }}
+      tags: always
+
+    - name: Display modules being applied
+      ansible.builtin.debug:
+        msg: "Applying modules: {{ __modules_to_load | join(', ') }}"
+        verbosity: 1
+      tags: always
+
+- name: "Module 03: Creating an Inventory"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+    - configs/module-03/controller_objects.yml
+  tasks:
+    - name: Apply module-03 objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      when: "'module-03' in __modules_to_load"
+      tags: always
+
+- name: "Module 04: Creating Your First Project"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+    - configs/module-04/controller_objects.yml
+  tasks:
+    - name: Apply module-04 objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      when: "'module-04' in __modules_to_load"
+      tags: always
+
+- name: "Module 05: Understanding Credentials"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+    - configs/module-05/controller_objects.yml
+  tasks:
+    - name: Apply module-05 objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      when: "'module-05' in __modules_to_load"
+      tags: always
+
+- name: "Module 06: Creating a Job Template"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+    - configs/module-06/controller_objects.yml
+  tasks:
+    - name: Apply module-06 objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      when: "'module-06' in __modules_to_load"
+      tags: always
+
+- name: "Module 07: Creating a Second Project"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+    - configs/module-07/controller_objects.yml
+  tasks:
+    - name: Apply module-07 objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      when: "'module-07' in __modules_to_load"
+      tags: always
+
+- name: "Module 08: Creating Multiple Job Templates"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+    - configs/module-08/controller_objects.yml
+  tasks:
+    - name: Apply module-08 objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      when: "'module-08' in __modules_to_load"
+      tags: always
+
+- name: "Module 09: Creating a Workflow Job Template"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+    - configs/module-09/controller_objects.yml
+  tasks:
+    - name: Apply module-09 objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      when: "'module-09' in __modules_to_load"
+      tags: always
+
+- name: "Module 10: Job Template with Survey"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - configs/auth.yml
+    - configs/module-10/controller_objects.yml
+  tasks:
+    - name: Apply module-10 objects
+      ansible.builtin.include_role:
+        name: infra.aap_configuration.dispatch
+      when: "'module-10' in __modules_to_load"
+      tags: always
